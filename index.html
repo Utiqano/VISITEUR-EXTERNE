@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page d'Accueil - Gestion des Visiteurs</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-image: url('https://media.licdn.com/dms/image/v2/D4E0BAQEEC9kI6mWkw/company-logo_200_200/company-logo_200_200/0/1719324183460/wkwde_logo?e=2147483647&v=beta&t=2lQJ0F4A_9oV2j8K5z7fB0z9z8K5z7fB0z9z8K5z7f');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.85);
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        }
+        .sidebar h2 {
+            text-align: center;
+            cursor: pointer;
+            padding: 15px;
+            margin: 0;
+            border-bottom: 1px solid #555;
+            font-size: 1.2em;
+            transition: background-color 0.3s;
+        }
+        .sidebar h2:hover {
+            background-color: #555;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.95);
+            min-height: 100vh;
+        }
+        .form-container, .rh-section, .direction-section, .security-section, .login-section {
+            display: none;
+        }
+        .form-container.active, .rh-section.active, .direction-section.active, .security-section.active, .login-section.active {
+            display: block;
+        }
+        form {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            font-weight: bold;
+            color: #444;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .checkbox-group {
+            margin: 20px 0;
+        }
+        .checkbox-group label {
+            font-weight: normal;
+        }
+        button {
+            padding: 12px 24px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .validation-section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .validation-section label {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .approved label {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .rejected label {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .login-form {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .error {
+            color: #dc3545;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        h1, h3 {
+            color: #333;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 10px;
+        }
+        .archive-section {
+            margin-top: 30px;
+        }
+        .archive-section h2 {
+            color: #333;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2 onclick="showSection('visitor')">Visiteur</h2>
+        <h2 onclick="showLogin('rh')">RH</h2>
+        <h2 onclick="showLogin('direction')">Direction</h2>
+        <h2 onclick="showLogin('security')">Sécurité</h2>
+    </div>
+    <div class="content">
+        <div id="visitor" class="form-container">
+            <h1>DEMANDE D’AUTORISATION D’ACCÈS – VISITEUR EXTERNE</h1>
+            <form id="visitorForm" onsubmit="submitForm(event)">
+                <h3>Informations sur le demandeur (employé interne)</h3>
+                <label>Nom et prénom :</label>
+                <input type="text" name="demandeur_nom" required>
+                <label>Poste :</label>
+                <input type="text" name="demandeur_poste" required>
+                <label>Département / Service :</label>
+                <input type="text" name="demandeur_departement" required>
+                <label>Téléphone :</label>
+                <input type="text" name="demandeur_telephone" required>
+
+                <h3>Informations sur le visiteur</h3>
+                <label>Nom et prénom :</label>
+                <input type="text" name="visiteur_nom" required>
+                <label>Entreprise / Organisation :</label>
+                <input type="text" name="visiteur_entreprise" required>
+                <label>Fonction :</label>
+                <input type="text" name="visiteur_fonction" required>
+                <label>Nombre de visiteurs :</label>
+                <input type="number" name="visiteur_nombre" min="1" required>
+                <label>Motif de la visite :</label>
+                <textarea name="visiteur_motif" required></textarea>
+                <label>Date de la visite :</label>
+                <input type="date" name="visiteur_date" required>
+                <label>Heure d’arrivée prévue :</label>
+                <input type="time" name="visiteur_heure" required>
+                <label>Durée estimée :</label>
+                <input type="text" name="visiteur_duree" required>
+
+                <h3>Responsable interne accompagnateur (si différent du demandeur)</h3>
+                <label>Nom et prénom :</label>
+                <input type="text" name="accompagnateur_nom">
+                <label>Poste / Service :</label>
+                <input type="text" name="accompagnateur_poste">
+
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="accompagnement"> Je m’engage à accompagner le visiteur pendant toute la durée de sa présence sur site et à faire respecter les règles de sécurité et le règlement intérieur.</label><br>
+                    <label><input type="checkbox" name="chaussures"> J’informe le visiteur pour s'équiper avec des chaussures de sécurité pour les visites opérationnelles (à l’intérieur de l’atelier).</label>
+                </div>
+
+                <label>Date de la demande :</label>
+                <input type="date" name="date_demande" required>
+                <label>Signature du demandeur :</label>
+                <input type="text" name="signature_demandeur" required>
+
+                <button type="submit">Envoyer</button>
+            </form>
+        </div>
+        <div id="rh" class="rh-section">
+            <h1>Validation RH</h1>
+            <div id="rhFormList"></div>
+            <div class="archive-section">
+                <h2>Archive RH</h2>
+                <div id="rhArchiveList"></div>
+            </div>
+        </div>
+        <div id="direction" class="direction-section">
+            <h1>Validation Direction</h1>
+            <div id="directionFormList"></div>
+            <div class="archive-section">
+                <h2>Archive Direction</h2>
+                <div id="directionArchiveList"></div>
+            </div>
+        </div>
+        <div id="security" class="security-section">
+            <h1>Section Sécurité</h1>
+            <div id="securityFormList"></div>
+        </div>
+        <div id="login" class="login-section">
+            <div class="login-form">
+                <h2>Connexion</h2>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <label>Email :</label>
+                    <input type="email" id="email" required>
+                    <label>Mot de passe :</label>
+                    <input type="password" id="password" required>
+                    <p id="error" class="error"></p>
+                    <button type="submit">Se connecter</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        let forms = [];
+        let currentSection = '';
+        let loggedInRole = '';
+
+        const users = [
+            { email: 'Securite@wkw.com', password: 'Securite123', role: 'security' },
+            { email: 'Direction@wkw.com', password: 'Direction123', role: 'direction' },
+            { email: 'RH@wkw.com', password: 'password123', role: 'rh' }
+        ];
+
+        function showSection(section) {
+            if (section !== 'visitor' && !loggedInRole) {
+                showLogin(section);
+                return;
+            }
+            if (section !== 'visitor' && loggedInRole !== section) {
+                alert('Accès non autorisé pour ce rôle.');
+                return;
+            }
+            document.querySelectorAll('.content > div').forEach(div => div.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+        }
+
+        function showLogin(section) {
+            currentSection = section;
+            document.querySelectorAll('.content > div').forEach(div => div.classList.remove('active'));
+            document.getElementById('login').classList.add('active');
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const error = document.getElementById('error');
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (user && user.role === currentSection) {
+                loggedInRole = user.role;
+                error.textContent = '';
+                document.getElementById('loginForm').reset();
+                showSection(currentSection);
+            } else {
+                error.textContent = 'Email ou mot de passe incorrect, ou rôle non autorisé.';
+            }
+        }
+
+        function submitForm(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+            data.status = 'pending_rh';
+            data.id = Date.now();
+            forms.push(data);
+            event.target.reset();
+            alert('Formulaire envoyé à RH pour validation.');
+            updateRHList();
+            showSection('rh');
+        }
+
+        function updateRHList() {
+            const rhList = document.getElementById('rhFormList');
+            rhList.innerHTML = '';
+            forms.filter(f => f.status === 'pending_rh').forEach(form => {
+                const div = document.createElement('div');
+                div.classList.add('validation-section');
+                div.innerHTML = `
+                    <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                    <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                    <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                    <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                    <div class="approved"><label><input type="radio" name="rh_${form.id}" value="approved" required> Accordé</label></div>
+                    <div class="rejected"><label><input type="radio" name="rh_${form.id}" value="rejected"> Refusé</label></div>
+                    <br>
+                    <label>Nom :</label><input type="text" id="rh_name_${form.id}" required>
+                    <label>Signature :</label><input type="text" id="rh_signature_${form.id}" required>
+                    <button onclick="validateRH(${form.id})">Valider</button>
+                `;
+                rhList.appendChild(div);
+            });
+            updateRHArchive();
+        }
+
+        function validateRH(id) {
+            if (loggedInRole !== 'rh') {
+                alert('Accès non autorisé pour valider.');
+                return;
+            }
+            const form = forms.find(f => f.id === id);
+            const rhDecision = document.querySelector(`input[name="rh_${id}"]:checked`).value;
+            const rhName = document.getElementById(`rh_name_${id}`).value;
+            const rhSignature = document.getElementById(`rh_signature_${id}`).value;
+            if (!rhName || !rhSignature) {
+                alert('Veuillez remplir le nom et la signature.');
+                return;
+            }
+            form.rh_decision = rhDecision;
+            form.rh_name = rhName;
+            form.rh_signature = rhSignature;
+            form.status = rhDecision === 'approved' ? 'pending_direction' : 'rejected';
+            updateRHList();
+            updateDirectionList();
+            updateSecurityList();
+            updateRHArchive();
+            if (form.status === 'rejected') {
+                alert('Demande refusée par RH, envoyée à Sécurité.');
+                showSection('security');
+            } else {
+                alert('Demande validée par RH, envoyée à Direction.');
+                showSection('direction');
+            }
+        }
+
+        function updateRHArchive() {
+            const rhArchiveList = document.getElementById('rhArchiveList');
+            rhArchiveList.innerHTML = '';
+            forms.filter(f => f.rh_decision).forEach(form => {
+                const div = document.createElement('div');
+                div.classList.add('validation-section');
+                div.innerHTML = `
+                    <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                    <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                    <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                    <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                    <p><strong>Décision RH :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'}</p>
+                    <p><strong>Nom :</strong> ${form.rh_name}</p>
+                    <p><strong>Signature :</strong> ${form.rh_signature}</p>
+                `;
+                rhArchiveList.appendChild(div);
+            });
+        }
+
+        function updateDirectionList() {
+            const directionList = document.getElementById('directionFormList');
+            directionList.innerHTML = '';
+            forms.filter(f => f.status === 'pending_direction').forEach(form => {
+                const div = document.createElement('div');
+                div.classList.add('validation-section');
+                div.innerHTML = `
+                    <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                    <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                    <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                    <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                    <p><strong>RH Validation :</strong> ${form.rh_name}</p>
+                    <div class="approved"><label><input type="radio" name="dir_${form.id}" value="approved" required> Accordé</label></div>
+                    <div class="rejected"><label><input type="radio" name="dir_${form.id}" value="rejected"> Refusé</label></div>
+                    <br>
+                    <label>Nom :</label><input type="text" id="dir_name_${form.id}" required>
+                    <label>Signature :</label><input type="text" id="dir_signature_${form.id}" required>
+                    <button onclick="validateDirection(${form.id})">Valider</button>
+                `;
+                directionList.appendChild(div);
+            });
+            updateDirectionArchive();
+        }
+
+        function validateDirection(id) {
+            if (loggedInRole !== 'direction') {
+                alert('Accès non autorisé pour valider.');
+                return;
+            }
+            const form = forms.find(f => f.id === id);
+            const dirDecision = document.querySelector(`input[name="dir_${form.id}"]:checked`).value;
+            const dirName = document.getElementById(`dir_name_${form.id}`).value;
+            const dirSignature = document.getElementById(`dir_signature_${form.id}`).value;
+            if (!dirName || !dirSignature) {
+                alert('Veuillez remplir le nom et la signature.');
+                return;
+            }
+            form.dir_decision = dirDecision;
+            form.dir_name = dirName;
+            form.dir_signature = dirSignature;
+            form.status = dirDecision === 'approved' ? 'approved' : 'rejected';
+            updateDirectionList();
+            updateSecurityList();
+            updateDirectionArchive();
+            if (form.status === 'rejected') {
+                alert('Demande refusée par Direction, envoyée à Sécurité.');
+                showSection('security');
+            } else {
+                alert('Demande validée par Direction, envoyée à Sécurité.');
+                showSection('security');
+            }
+        }
+
+        function updateDirectionArchive() {
+            const directionArchiveList = document.getElementById('directionArchiveList');
+            directionArchiveList.innerHTML = '';
+            forms.filter(f => f.dir_decision).forEach(form => {
+                const div = document.createElement('div');
+                div.classList.add('validation-section');
+                div.innerHTML = `
+                    <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                    <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                    <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                    <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                    <p><strong>Décision Direction :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusé'}</p>
+                    <p><strong>Nom :</strong> ${form.dir_name}</p>
+                    <p><strong>Signature :</strong> ${form.dir_signature}</p>
+                `;
+                directionArchiveList.appendChild(div);
+            });
+        }
+
+        function updateSecurityList() {
+            const securityList = document.getElementById('securityFormList');
+            securityList.innerHTML = '';
+            forms.filter(f => f.status === 'approved' || f.status === 'rejected').forEach(form => {
+                const div = document.createElement('div');
+                div.classList.add('validation-section');
+                div.innerHTML = `
+                    <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                    <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                    <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
+                    <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                    <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                    <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
+                    <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
+                    ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
+                    ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.dir_name}</p>` : ''}
+                    <p><strong>Statut Final :</strong> ${form.status === 'approved' ? '<span style="color: #28a745;">Approuvé</span>' : '<span style="color: #dc3545;">Refusé</span>'}</p>
+                `;
+                securityList.appendChild(div);
+            });
+        }
+
+        // Show visitor section by default
+        showSection('visitor');
+    </script>
+</body>
+</html>
