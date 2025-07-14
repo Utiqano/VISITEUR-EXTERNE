@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.firebaseio.com https://*.firebasedatabase.app 'unsafe-inline'; connect-src 'self' https://*.firebaseio.com https://*.firebasedatabase.app https://firestore.googleapis.com https://*.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://media.licdn.com;">
     <title>Page d'Accueil - Gestion des Visiteurs</title>
     <style>
         body {
@@ -13,7 +15,13 @@
             background-position: center;
             background-attachment: fixed;
             color: #333;
+            overflow-x: hidden;
         }
+
+        .sidebar-container {
+            position: relative;
+        }
+
         .sidebar {
             width: 250px;
             height: 100vh;
@@ -24,7 +32,10 @@
             left: 0;
             padding-top: 20px;
             box-shadow: 3px 0 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
         }
+
         .sidebar h2 {
             text-align: center;
             cursor: pointer;
@@ -34,69 +45,102 @@
             font-size: 1.2em;
             transition: background-color 0.3s, transform 0.2s;
         }
+
         .sidebar h2:hover {
             background-color: #28a745;
             transform: scale(1.05);
         }
+
         .content {
             margin-left: 260px;
             padding: 30px;
             background-color: rgba(255, 255, 255, 0.97);
             min-height: 100vh;
             animation: fadeIn 0.5s ease-in;
+            transition: margin-left 0.3s ease-in-out;
         }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
+
+        .hamburger {
+            display: none;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1.5em;
+            cursor: pointer;
+            z-index: 1100;
+            border-radius: 5px;
+        }
+
         .form-container, .rh-section, .direction-section, .security-section, .login-section {
             display: none;
         }
+
         .form-container.active, .rh-section.active, .direction-section.active, .security-section.active, .login-section.active {
             display: block;
             animation: slideIn 0.5s ease-in;
         }
+
         @keyframes slideIn {
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
+
         form {
-            max-width: 700px;
+            max-width: 90%;
             margin: 0 auto;
             background-color: #fff;
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
+
         label {
             display: block;
             margin: 15px 0 5px;
             font-weight: bold;
             color: #333;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
+
         input, textarea, select {
             width: 100%;
             padding: 12px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 6px;
-            font-size: 1em;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
             transition: border-color 0.3s;
+            box-sizing: border-box;
         }
+
         input:focus, textarea:focus {
             border-color: #28a745;
             outline: none;
         }
+
         textarea {
             resize: vertical;
             min-height: 120px;
         }
+
         .checkbox-group {
             margin: 20px 0;
         }
+
         .checkbox-group label {
             font-weight: normal;
+            font-size: clamp(0.85rem, 2.2vw, 0.95rem);
         }
+
         button {
             padding: 12px 24px;
             background-color: #28a745;
@@ -104,18 +148,21 @@
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
             transition: background-color 0.3s, transform 0.2s;
             animation: pulse 2s infinite;
         }
+
         button:hover {
             background-color: #218838;
-            transform Godot AI: System: transform: scale(1.05);
+            transform: scale(1.05);
         }
+
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
         }
+
         .validation-section {
             margin-top: 20px;
             padding: 20px;
@@ -123,23 +170,29 @@
             border-radius: 8px;
             background-color: #f9f9f9;
             transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            box-sizing: border-box;
         }
+
         .validation-section:hover {
             transform: scale(1.02);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
+
         .approved label {
             color: #28a745;
             font-weight: bold;
             transition: color 0.3s;
         }
+
         .rejected label {
             color: #dc3545;
             font-weight: bold;
             transition: color 0.3s;
         }
+
         .login-form {
-            max-width: 400px;
+            max-width: 90%;
             margin: 50px auto;
             padding: 25px;
             background-color: #fff;
@@ -147,37 +200,48 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             animation: fadeIn 0.5s ease-in;
         }
+
         .error {
             color: #dc3545;
             text-align: center;
             margin-bottom: 15px;
             font-weight: bold;
+            font-size: clamp(0.85rem, 2.2vw, 0.95rem);
         }
+
         h1, h3 {
             color: #333;
             border-bottom: 3px solid #28a745;
             padding-bottom: 12px;
             font-weight: 600;
+            font-size: clamp(1rem, 3vw, 1.5rem);
         }
+
         .archive-section {
             margin-top: 30px;
         }
+
         .archive-section h2 {
             color: #333;
             border-bottom: 3px solid #28a745;
             padding-bottom: 12px;
             font-weight: 600;
+            font-size: clamp(1rem, 3vw, 1.5rem);
         }
+
         .security-section h1 {
             display: flex;
             align-items: center;
             gap: 15px;
+            font-size: clamp(1rem, 3vw, 1.5rem);
         }
+
         .security-section h1 img {
-            width: 50px;
-            height: 50px;
+            width: clamp(40px, 10vw, 50px);
+            height: clamp(40px, 10vw, 50px);
             animation: fadeIn 1s ease-in;
         }
+
         .security-section .validation-section {
             background-color: #e6f4ea;
             border: 1px solid #28a745;
@@ -186,33 +250,105 @@
             margin-bottom: 20px;
             transition: all 0.3s ease;
         }
+
         .security-section .validation-section.approved {
             border-left: 5px solid #28a745;
         }
+
         .security-section .validation-section.rejected {
             border-left: 5px solid #dc3545;
             background-color: #f8d7da;
         }
+
         .security-section .validation-section p {
             margin: 10px 0;
-            font-size: 1.1em;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
         }
+
         .security-section .validation-section p strong {
             color: #333;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .sidebar {
+                width: 200px;
+            }
+
+            form {
+                padding: 15px;
+            }
+
+            input, textarea, select, button {
+                padding: 10px;
+                font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+            }
+
+            .validation-section {
+                padding: 15px;
+            }
+
+            .security-section .validation-section {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 100%;
+            }
+
+            .hamburger {
+                font-size: 1.2em;
+                padding: 8px;
+            }
+
+            h1, h3, .archive-section h2 {
+                font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            }
+
+            .login-form {
+                padding: 15px;
+                margin: 20px auto;
+            }
+
+            button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2 onclick="showSection('visitor')">Visiteur</h2>
-        <h2 onclick="showLogin('rh')">RH</h2>
-        <h2 onclick="showLogin('direction')">Direction</h2>
-        <h2 onclick="showLogin('security')">Sécurité</h2>
+    <div class="sidebar-container">
+        <div class="sidebar" id="sidebar">
+            <h2 onclick="showSection('visitor')" role="button" aria-label="Section Visiteur">Visiteur</h2>
+            <h2 onclick="showLogin('rh')" role="button" aria-label="Section RH">RH</h2>
+            <h2 onclick="showLogin('direction')" role="button" aria-label="Section Direction">Direction</h2>
+            <h2 onclick="showLogin('security')" role="button" aria-label="Section Sécurité">Sécurité</h2>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle Menu">☰</button>
     </div>
     <div class="content">
         <div id="visitor" class="form-container">
             <h1>DEMANDE D’AUTORISATION D’ACCÈS – VISITEUR EXTERNE</h1>
-            <form id="visitorForm" onsubmit="submitForm(event)">
+            <form id="visitorForm">
                 <h3>Informations sur le demandeur (employé interne)</h3>
                 <label>Nom et prénom :</label>
                 <input type="text" name="demandeur_nom" required>
@@ -282,11 +418,12 @@
                 Section Sécurité
             </h1>
             <div id="securityFormList"></div>
+            <button onclick="updateSecurityList()">Rafraîchir</button>
         </div>
         <div id="login" class="login-section">
             <div class="login-form">
                 <h2>Connexion</h2>
-                <form id="loginForm" onsubmit="handleLogin(event)">
+                <form id="loginForm">
                     <label>Email :</label>
                     <input type="email" id="email" required>
                     <label>Mot de passe :</label>
@@ -297,95 +434,114 @@
             </div>
         </div>
     </div>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script>
-        let forms = [];
-        let currentSection = '';
-        let loggedInRole = '';
-
-        const users = [
-            { email: 'Securite@wkw.com', password: 'Securite123', role: 'security' },
-            { email: 'Direction@wkw.com', password: 'Direction123', role: 'direction' },
-            { email: 'RH@wkw.com', password: 'password123', role: 'rh' }
-        ];
-
         function showSection(section) {
-            if (section !== 'visitor' && !loggedInRole) {
+            console.log('showSection called with:', section, 'loggedInRole:', window.loggedInRole);
+            if (section !== 'visitor' && !window.loggedInRole) {
                 showLogin(section);
                 return;
             }
-            if (section !== 'visitor' && loggedInRole !== section) {
+            if (section !== 'visitor' && window.loggedInRole !== section) {
                 alert('Accès non autorisé pour ce rôle.');
                 return;
             }
             document.querySelectorAll('.content > div').forEach(div => div.classList.remove('active'));
             document.getElementById(section).classList.add('active');
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
         }
 
-        function showLogin(section) {
-            currentSection = section;
+        function showLogin(role) {
+            console.log('showLogin called with:', role);
+            window.currentSection = role;
             document.querySelectorAll('.content > div').forEach(div => div.classList.remove('active'));
             document.getElementById('login').classList.add('active');
+            const emailInput = document.getElementById('email');
+            if (role === 'rh') emailInput.value = 'rh@wkw.com';
+            else if (role === 'direction') emailInput.value = 'direction@wkw.com';
+            else if (role === 'security') emailInput.value = 'securite@wkw.com';
+            document.getElementById('password').value = '';
+            emailInput.focus();
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
         }
 
         function handleLogin(event) {
             event.preventDefault();
-            const email = document.getElementById('email').value;
+            console.log('handleLogin triggered');
+            const email = document.getElementById('email').value.toLowerCase();
             const password = document.getElementById('password').value;
             const error = document.getElementById('error');
-            const user = users.find(u => u.email === email && u.password === password);
 
-            if (user && user.role === currentSection) {
-                loggedInRole = user.role;
-                error.textContent = '';
-                document.getElementById('loginForm').reset();
-                showSection(currentSection);
-            } else {
-                error.textContent = 'Email ou mot de passe incorrect, ou rôle non autorisé.';
+            if (!window.auth) {
+                error.textContent = 'Firebase authentication not initialized. Check console.';
+                console.error('Firebase auth is undefined');
+                return;
             }
+
+            console.log('Attempting login with email:', email, 'password:', password);
+            window.auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log('Login successful for:', email, 'User UID:', userCredential.user.uid);
+                    const user = userCredential.user;
+                    let role;
+                    if (email === 'securite@wkw.com') role = 'security';
+                    else if (email === 'direction@wkw.com') role = 'direction';
+                    else if (email === 'rh@wkw.com') role = 'rh';
+                    else {
+                        window.auth.signOut();
+                        throw new Error('Rôle non autorisé pour cet email.');
+                    }
+                    window.loggedInRole = role;
+                    console.log('Assigned role:', window.loggedInRole);
+
+                    return db.collection('users').doc(email).set({ role: role }, { merge: true })
+                        .then(() => {
+                            console.log('Role synced to Firestore for:', email);
+                            error.textContent = '';
+                            document.getElementById('loginForm').reset();
+                            showSection(window.currentSection || window.loggedInRole);
+                        });
+                })
+                .catch((error) => {
+                    console.error('Login error:', error.code, error.message);
+                    error.textContent = `Erreur: ${error.message}`;
+                });
         }
 
         function submitForm(event) {
             event.preventDefault();
-            const formData = new FormData(event.target);
+            const formData = new FormData(document.getElementById('visitorForm'));
             const data = Object.fromEntries(formData);
             data.status = 'pending_rh';
             data.id = Date.now();
-            forms.push(data);
-            event.target.reset();
-            alert('Formulaire envoyé à RH pour validation.');
-            updateRHList();
-            showSection('rh');
-        }
+            data.timestamp = firebase.firestore.FieldValue.serverTimestamp();
 
-        function updateRHList() {
-            const rhList = document.getElementById('rhFormList');
-            rhList.innerHTML = '';
-            forms.filter(f => f.status === 'pending_rh').forEach(form => {
-                const div = document.createElement('div');
-                div.classList.add('validation-section');
-                div.innerHTML = `
-                    <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                    <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                    <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                    <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                    <div class="approved"><label><input type="radio" name="rh_${form.id}" value="approved" required> Accordé</label></div>
-                    <div class="rejected"><label><input type="radio" name="rh_${form.id}" value="rejected"> Refusé</label></div>
-                    <br>
-                    <label>Nom :</label><input type="text" id="rh_name_${form.id}" required>
-                    <label>Signature :</label><input type="text" id="rh_signature_${form.id}" required>
-                    <button onclick="validateRH(${form.id})">Valider</button>
-                `;
-                rhList.appendChild(div);
-            });
-            updateRHArchive();
+            console.log('Submitting form with data:', data);
+            db.collection('visitors').doc(data.id.toString()).set(data)
+                .then(() => {
+                    console.log('Form submitted to Firestore with ID:', data.id);
+                    document.getElementById('visitorForm').reset();
+                    alert('Formulaire envoyé à RH pour validation.');
+                    updateRHList();
+                    showSection('rh');
+                })
+                .catch((error) => {
+                    console.error('Error submitting form:', error);
+                    alert('Erreur lors de l\'envoi du formulaire: ' + error.message);
+                });
         }
 
         function validateRH(id) {
-            if (loggedInRole !== 'rh') {
+            if (window.loggedInRole !== 'rh') {
                 alert('Accès non autorisé pour valider.');
                 return;
             }
-            const form = forms.find(f => f.id === id);
             const rhDecision = document.querySelector(`input[name="rh_${id}"]:checked`).value;
             const rhName = document.getElementById(`rh_name_${id}`).value;
             const rhSignature = document.getElementById(`rh_signature_${id}`).value;
@@ -393,140 +549,291 @@
                 alert('Veuillez remplir le nom et la signature.');
                 return;
             }
-            form.rh_decision = rhDecision;
-            form.rh_name = rhName;
-            form.rh_signature = rhSignature;
-            form.status = rhDecision === 'approved' ? 'pending_direction' : 'rejected';
-            updateRHList();
-            updateDirectionList();
-            updateSecurityList();
-            updateRHArchive();
-            if (form.status === 'rejected') {
-                alert('Demande refusée par RH, envoyée à Sécurité.');
-                showSection('security');
-            } else {
-                alert('Demande validée par RH, envoyée à Direction.');
-                showSection('direction');
-            }
-        }
 
-        function updateRHArchive() {
-            const rhArchiveList = document.getElementById('rhArchiveList');
-            rhArchiveList.innerHTML = '';
-            forms.filter(f => f.rh_decision).forEach(form => {
-                const div = document.createElement('div');
-                div.classList.add('validation-section');
-                div.innerHTML = `
-                    <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                    <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                    <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                    <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                    <p><strong>Décision RH :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'}</p>
-                    <p><
+            const updateData = {
+                rh_decision: rhDecision,
+                rh_name: rhName,
+                rh_signature: rhSignature,
+                status: rhDecision === 'approved' ? 'pending_direction' : 'pending_security',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
 
-strong>Nom :</strong> ${form.rh_name}</p>
-                    <p><strong>Signature :</strong> ${form.rh_signature}</p>
-                `;
-                rhArchiveList.appendChild(div);
-            });
-        }
-
-        function updateDirectionList() {
-            const directionList = document.getElementById('directionFormList');
-            directionList.innerHTML = '';
-            forms.filter(f => f.status === 'pending_direction').forEach(form => {
-                const div = document.createElement('div');
-                div.classList.add('validation-section');
-                div.innerHTML = `
-                    <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                    <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                    <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                    <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                    <p><strong>RH Validation :</strong> ${form.rh_name}</p>
-                    <div class="approved"><label><input type="radio" name="dir_${form.id}" value="approved" required> Accordé</label></div>
-                    <div class="rejected"><label><input type="radio" name="dir_${form.id}" value="rejected"> Refusé</label></div>
-                    <br>
-                    <label>Nom :</label><input type="text" id="dir_name_${form.id}" required>
-                    <label>Signature :</label><input type="text" id="dir_signature_${form.id}" required>
-                    <button onclick="validateDirection(${form.id})">Valider</button>
-                `;
-                directionList.appendChild(div);
-            });
-            updateDirectionArchive();
+            db.collection('visitors').doc(id.toString()).update(updateData)
+                .then(() => {
+                    console.log('RH validation updated in Firestore for ID:', id, 'New status:', updateData.status);
+                    updateRHList();
+                    updateRHArchive();
+                    if (rhDecision === 'approved') {
+                        updateDirectionList();
+                        setTimeout(() => {
+                            alert('Demande validée par RH, envoyée à Direction.');
+                            showSection('direction');
+                        }, 500);
+                    } else {
+                        updateSecurityList();
+                        setTimeout(() => {
+                            alert('Demande refusée par RH, envoyée à Sécurité.');
+                            showSection('security');
+                        }, 500);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error updating RH validation:', error);
+                    alert('Erreur lors de la validation RH: ' + error.message);
+                });
         }
 
         function validateDirection(id) {
-            if (loggedInRole !== 'direction') {
+            if (window.loggedInRole !== 'direction') {
                 alert('Accès non autorisé pour valider.');
                 return;
             }
-            const form = forms.find(f => f.id === id);
-            const dirDecision = document.querySelector(`input[name="dir_${form.id}"]:checked`).value;
-            const dirName = document.getElementById(`dir_name_${form.id}`).value;
-            const dirSignature = document.getElementById(`dir_signature_${form.id}`).value;
+            const dirDecision = document.querySelector(`input[name="dir_${id}"]:checked`)?.value || 'approved';
+            const dirName = document.getElementById(`dir_name_${id}`).value;
+            const dirSignature = document.getElementById(`dir_signature_${id}`).value;
             if (!dirName || !dirSignature) {
                 alert('Veuillez remplir le nom et la signature.');
                 return;
             }
-            form.dir_decision = dirDecision;
-            form.dir_name = dirName;
-            form.dir_signature = dirSignature;
-            form.status = dirDecision === 'approved' ? 'approved' : 'rejected';
-            updateDirectionList();
-            updateSecurityList();
-            updateDirectionArchive();
-            if (form.status === 'rejected') {
-                alert('Demande refusée par Direction, envoyée à Sécurité.');
-                showSection('security');
-            } else {
-                alert('Demande validée par Direction, envoyée à Sécurité.');
-                showSection('security');
-            }
+
+            const updateData = {
+                dir_decision: dirDecision,
+                dir_name: dirName,
+                dir_signature: dirSignature,
+                status: 'pending_security',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            db.collection('visitors').doc(id.toString()).update(updateData)
+                .then(() => {
+                    console.log('Direction validation updated in Firestore for ID:', id, 'New status:', updateData.status);
+                    return db.collection('visitors').doc(id.toString()).get().then(doc => {
+                        console.log('Verified document after update:', doc.data());
+                        updateDirectionList();
+                        updateDirectionArchive();
+                        updateSecurityList();
+                        setTimeout(() => {
+                            alert(`Demande ${dirDecision === 'approved' ? 'validée' : 'refusée'} par Direction, envoyée à Sécurité.`);
+                            showSection('security');
+                        }, 500);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error updating Direction validation:', error);
+                    alert('Erreur lors de la validation Direction: ' + error.message);
+                });
+        }
+
+        function updateRHList() {
+            console.log('Updating RH list...');
+            db.collection('visitors').where('status', '==', 'pending_rh').get()
+                .then((querySnapshot) => {
+                    console.log('RH forms count:', querySnapshot.size);
+                    const rhList = document.getElementById('rhFormList');
+                    rhList.innerHTML = '';
+                    querySnapshot.forEach((doc) => {
+                        const form = doc.data();
+                        const div = document.createElement('div');
+                        div.classList.add('validation-section');
+                        div.innerHTML = `
+                            <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                            <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                            <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                            <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                            <div class="approved"><label><input type="radio" name="rh_${form.id}" value="approved" required> Accordé</label></div>
+                            <div class="rejected"><label><input type="radio" name="rh_${form.id}" value="rejected"> Refusé</label></div>
+                            <br>
+                            <label>Nom :</label><input type="text" id="rh_name_${form.id}" required>
+                            <label>Signature :</label><input type="text" id="rh_signature_${form.id}" required>
+                            <button data-id="${form.id}" onclick="validateRH(${form.id})">Valider</button>
+                        `;
+                        rhList.appendChild(div);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error fetching RH list:', error);
+                });
+        }
+
+        function updateRHArchive() {
+            db.collection('visitors').where('rh_decision', '!=', null).get()
+                .then((querySnapshot) => {
+                    const rhArchiveList = document.getElementById('rhArchiveList');
+                    rhArchiveList.innerHTML = '';
+                    querySnapshot.forEach((doc) => {
+                        const form = doc.data();
+                        const div = document.createElement('div');
+                        div.classList.add('validation-section');
+                        div.innerHTML = `
+                            <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                            <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                            <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                            <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                            <p><strong>Décision RH :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'}</p>
+                            <p><strong>Nom :</strong> ${form.rh_name}</p>
+                            <p><strong>Signature :</strong> ${form.rh_signature}</p>
+                        `;
+                        rhArchiveList.appendChild(div);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error fetching RH archive:', error);
+                });
+        }
+
+        function updateDirectionList() {
+            console.log('Updating Direction list...');
+            db.collection('visitors').where('status', '==', 'pending_direction').get()
+                .then((querySnapshot) => {
+                    console.log('Direction forms count:', querySnapshot.size);
+                    const directionList = document.getElementById('directionFormList');
+                    directionList.innerHTML = '';
+                    querySnapshot.forEach((doc) => {
+                        const form = doc.data();
+                        const div = document.createElement('div');
+                        div.classList.add('validation-section');
+                        div.innerHTML = `
+                            <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                            <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                            <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                            <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                            <p><strong>RH Validation :</strong> ${form.rh_name}</p>
+                            <div class="approved"><label><input type="radio" name="dir_${form.id}" value="approved" required> Accordé</label></div>
+                            <div class="rejected"><label><input type="radio" name="dir_${form.id}" value="rejected"> Refusé</label></div>
+                            <br>
+                            <label>Nom :</label><input type="text" id="dir_name_${form.id}" required>
+                            <label>Signature :</label><input type="text" id="dir_signature_${form.id}" required>
+                            <button data-id="${form.id}" onclick="validateDirection(${form.id})">Valider</button>
+                        `;
+                        directionList.appendChild(div);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error fetching Direction list:', error);
+                });
         }
 
         function updateDirectionArchive() {
-            const directionArchiveList = document.getElementById('directionArchiveList');
-            directionArchiveList.innerHTML = '';
-            forms.filter(f => f.dir_decision).forEach(form => {
-                const div = document.createElement('div');
-                div.classList.add('validation-section');
-                div.innerHTML = `
-                    <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                    <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                    <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                    <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                    <p><strong>Décision Direction :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusé'}</p>
-                    <p><strong>Nom :</strong> ${form.dir_name}</p>
-                    <p><strong>Signature :</strong> ${form.dir_signature}</p>
-                `;
-                directionArchiveList.appendChild(div);
-            });
+            db.collection('visitors').where('dir_decision', '!=', null).get()
+                .then((querySnapshot) => {
+                    const directionArchiveList = document.getElementById('directionArchiveList');
+                    directionArchiveList.innerHTML = '';
+                    querySnapshot.forEach((doc) => {
+                        const form = doc.data();
+                        const div = document.createElement('div');
+                        div.classList.add('validation-section');
+                        div.innerHTML = `
+                            <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                            <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                            <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                            <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                            <p><strong>Décision Direction :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusé'}</p>
+                            <p><strong>Nom :</strong> ${form.dir_name}</p>
+                            <p><strong>Signature :</strong> ${form.dir_signature}</p>
+                        `;
+                        directionArchiveList.appendChild(div);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error fetching Direction archive:', error);
+                });
         }
 
         function updateSecurityList() {
-            const securityList = document.getElementById('securityFormList');
-            securityList.innerHTML = '';
-            forms.filter(f => f.status === 'approved' || f.status === 'rejected').forEach(form => {
-                const div = document.createElement('div');
-                div.classList.add('validation-section', form.status);
-                div.innerHTML = `
-                    <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                    <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                    <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
-                    <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                    <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                    <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
-                    <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
-                    ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
-                    ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.dir_name}</p>` : ''}
-                    <p><strong>Statut Final :</strong> ${form.status === 'approved' ? '<span style="color: #28a745;">Approuvé</span>' : '<span style="color: #dc3545;">Refusé</span>'}</p>
-                `;
-                securityList.appendChild(div);
-            });
+            console.log('Updating Security list...');
+            db.collection('visitors').where('status', 'in', ['pending_security', 'approved', 'rejected']).get()
+                .then((querySnapshot) => {
+                    console.log('Security forms count:', querySnapshot.size, 'Documents:', querySnapshot.docs.map(doc => doc.data()));
+                    const securityList = document.getElementById('securityFormList');
+                    securityList.innerHTML = '';
+                    querySnapshot.forEach((doc) => {
+                        const form = doc.data();
+                        const div = document.createElement('div');
+                        div.classList.add('validation-section');
+                        if (form.status && form.status !== 'pending_security') {
+                            div.classList.add(form.status);
+                        }
+                        div.innerHTML = `
+                            <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                            <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                            <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
+                            <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                            <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                            <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
+                            <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
+                            ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
+                            ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
+                            <p><strong>Statut Final :</strong> ${form.status === 'pending_security' ? 'En attente de traitement' : (form.status === 'approved' ? '<span style="color: #28a745;">Approuvé</span>' : '<span style="color: #dc3545;">Refusé</span>')}</p>
+                        `;
+                        securityList.appendChild(div);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error fetching Security list:', error);
+                });
         }
 
-        // Show visitor section by default
-        showSection('visitor');
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded, initializing Firebase...');
+            const firebaseConfig = {
+                apiKey: "AIzaSyDz91WZo_FB3OUwJ09kQnSKHYM9cYpSZqI",
+                authDomain: "visiteur-externe.firebaseapp.com",
+                projectId: "visiteur-externe",
+                storageBucket: "visiteur-externe.firebasestorage.app",
+                messagingSenderId: "304390681920",
+                appId: "1:304390681920:web:f77468807d31ae6008b6a5",
+                measurementId: "G-KB5RDKDY40"
+            };
+
+            try {
+                const firebaseApp = firebase.initializeApp(firebaseConfig);
+                console.log('Firebase initialized successfully');
+                window.auth = firebase.auth();
+                window.db = firebase.firestore();
+                window.forms = [];
+                window.currentSection = '';
+                window.loggedInRole = '';
+            } catch (error) {
+                console.error('Firebase initialization failed:', error);
+                document.getElementById('error').textContent = 'Erreur d\'initialisation Firebase. Vérifiez la console.';
+                return;
+            }
+
+            const hamburger = document.getElementById('hamburger');
+            const sidebar = document.getElementById('sidebar');
+
+            hamburger.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+
+            document.querySelectorAll('.sidebar h2').forEach(item => {
+                item.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', handleLogin);
+                console.log('Login form event listener attached');
+            } else {
+                console.error('Login form not found');
+            }
+
+            document.getElementById('visitorForm').addEventListener('submit', submitForm);
+
+            showSection('visitor');
+
+            window.auth.onAuthStateChanged((user) => {
+                if (!user && window.loggedInRole) {
+                    console.log('User logged out, resetting role');
+                    window.loggedInRole = '';
+                    showSection('visitor');
+                }
+            });
+        });
     </script>
 </body>
 </html>
