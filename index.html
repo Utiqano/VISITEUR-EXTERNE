@@ -453,6 +453,7 @@
             if (window.innerWidth <= 768) {
                 document.getElementById('sidebar').classList.remove('active');
             }
+            console.log('Showing section:', section, 'Current role:', window.loggedInRole);
         }
 
         function showLogin(role) {
@@ -544,7 +545,7 @@
             }
             const rhDecision = document.querySelector(`input[name="rh_${id}"]:checked`).value;
             const rhName = document.getElementById(`rh_name_${id}`).value;
-            const rhSignature = document.getElementById(`rh_signature_${id}`).value;
+            const rhSignature = document.getElementById(`rh_signature_${id}`).value; // Fixed to use id
             if (!rhName || !rhSignature) {
                 alert('Veuillez remplir le nom et la signature.');
                 return;
@@ -787,12 +788,16 @@
 
             try {
                 const firebaseApp = firebase.initializeApp(firebaseConfig);
-                console.log('Firebase initialized successfully');
+                console.log('Firebase initialized successfully with app:', firebaseApp.name);
                 window.auth = firebase.auth();
                 window.db = firebase.firestore();
                 window.forms = [];
                 window.currentSection = '';
                 window.loggedInRole = '';
+                // Enable persistence for better cross-browser behavior
+                firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+                    .then(() => console.log('Auth persistence set to LOCAL'))
+                    .catch((error) => console.error('Error setting persistence:', error));
             } catch (error) {
                 console.error('Firebase initialization failed:', error);
                 document.getElementById('error').textContent = 'Erreur d\'initialisation Firebase. Vérifiez la console.';
@@ -827,6 +832,7 @@
             showSection('visitor');
 
             window.auth.onAuthStateChanged((user) => {
+                console.log('Auth state changed:', user ? 'Logged in' : 'Logged out', 'User:', user);
                 if (!user && window.loggedInRole) {
                     console.log('User logged out, resetting role');
                     window.loggedInRole = '';
