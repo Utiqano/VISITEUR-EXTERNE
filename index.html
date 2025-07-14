@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.firebaseio.com https://*.firebasedatabase.app 'unsafe-inline'; connect-src 'self' https://*.firebaseio.com https://*.firebasedatabase.app https://firestore.googleapis.com https://*.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://media.licdn.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.firebaseio.com https://*.firebasedatabase.app 'unsafe-inline'; connect-src 'self' https://*.firebaseio.com https://*.firebasedatabase.app https://firestore.googleapis.com https://*.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://media.licdn.com https://ith-gmbh.de;">
     <title>Page d'Accueil - Gestion des Visiteurs</title>
     <style>
         body {
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
-            background-image: url('https://media.licdn.com/dms/image/v2/D4E0BAQEEC9kI6mWkw/company-logo_200_200/company-logo_200_200/0/1719324183460/wkwde_logo?e=2147483647&v=beta&t=2lQJ0F4A_9oV2j8K5z7fB0z9z8K5z7fB0z9z8K5z7f');
+            background-image: url('https://ith-gmbh.de/wp-content/uploads/logo-wkwk.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -679,7 +679,7 @@
                             <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
                             <p><strong>Date :</strong> ${form.visiteur_date}</p>
                             <div class="approved"><label><input type="radio" name="rh_${form.id}" value="approved" required> Accordé</label></div>
-                            <div class="rejected"><label><input type="radio" name="rh_${id}" value="rejected"> Refusé</label></div>
+                            <div class="rejected"><label><input type="radio" name="rh_${form.id}" value="rejected"> Refusé</label></div>
                             <br>
                             <label>Nom :</label><input type="text" id="rh_name_${form.id}" required>
                             <label>Signature :</label><input type="text" id="rh_signature_${form.id}" required>
