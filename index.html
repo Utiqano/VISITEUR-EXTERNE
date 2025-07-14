@@ -509,6 +509,7 @@
                             error.textContent = '';
                             document.getElementById('loginForm').reset();
                             showSection(window.currentSection || window.loggedInRole);
+                            setupRealTimeListeners(); // Set up listeners after login
                         });
                 })
                 .catch((error) => {
@@ -566,7 +567,7 @@
                     console.log('RH validation updated in Firestore for ID:', id, 'New status:', updateData.status);
                     updateRHList();
                     if (rhDecision === 'approved') {
-                        updateDirectionList(); // Automatically update Direction list when RH approves
+                        updateDirectionList(); // Update Direction list
                         setTimeout(() => {
                             alert('Demande validée par RH, envoyée à Direction.');
                             showSection('direction');
@@ -602,7 +603,7 @@
                 dir_decision: dirDecision,
                 dir_name: dirName,
                 dir_signature: dirSignature,
-                status: 'pending_security', // Always send to Security after Direction decision
+                status: 'pending_security',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
 
@@ -612,7 +613,7 @@
                     return db.collection('visitors').doc(id.toString()).get().then(doc => {
                         console.log('Verified document after update:', doc.data());
                         updateDirectionList();
-                        updateSecurityList(); // Automatically update Security list
+                        updateSecurityList();
                         setTimeout(() => {
                             alert(`Demande ${dirDecision === 'approved' ? 'validée' : 'refusée'} par Direction, envoyée à Sécurité.`);
                             showSection('security');
@@ -642,7 +643,7 @@
                             <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
                             <p><strong>Date :</strong> ${form.visiteur_date}</p>
                             <div class="approved"><label><input type="radio" name="rh_${form.id}" value="approved" required> Accordé</label></div>
-                            <div class="rejected"><label><input type="radio" name="rh_${form.id}" value="rejected"> Refusé</label></div>
+                            <div class="rejected"><label><input type="radio" name="rh_${id}" value="rejected"> Refusé</label></div>
                             <br>
                             <label>Nom :</label><input type="text" id="rh_name_${form.id}" required>
                             <label>Signature :</label><input type="text" id="rh_signature_${form.id}" required>
@@ -776,6 +777,107 @@
                 });
         }
 
+        function setupRealTimeListeners() {
+            console.log('Setting up real-time listeners for role:', window.loggedInRole);
+            if (window.unsubscribers) {
+                window.unsubscribers.forEach(unsubscribe => unsubscribe());
+            }
+            window.unsubscribers = [];
+
+            if (window.loggedInRole === 'rh') {
+                const unsubscribeRH = db.collection('visitors')
+                    .where('status', '==', 'pending_rh')
+                    .onSnapshot((snapshot) => {
+                        console.log('RH list updated in real-time, count:', snapshot.size);
+                        const rhList = document.getElementById('rhFormList');
+                        rhList.innerHTML = '';
+                        snapshot.forEach((doc) => {
+                            const form = doc.data();
+                            const div = document.createElement('div');
+                            div.classList.add('validation-section');
+                            div.innerHTML = `
+                                <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                                <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                                <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                                <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                                <div class="approved"><label><input type="radio" name="rh_${form.id}" value="approved" required> Accordé</label></div>
+                                <div class="rejected"><label><input type="radio" name="rh_${form.id}" value="rejected"> Refusé</label></div>
+                                <br>
+                                <label>Nom :</label><input type="text" id="rh_name_${form.id}" required>
+                                <label>Signature :</label><input type="text" id="rh_signature_${form.id}" required>
+                                <button data-id="${form.id}" onclick="validateRH(${form.id})">Valider</button>
+                            `;
+                            rhList.appendChild(div);
+                        });
+                    }, (error) => {
+                        console.error('Error in RH real-time listener:', error);
+                    });
+                window.unsubscribers.push(unsubscribeRH);
+            } else if (window.loggedInRole === 'direction') {
+                const unsubscribeDirection = db.collection('visitors')
+                    .where('status', '==', 'pending_direction')
+                    .onSnapshot((snapshot) => {
+                        console.log('Direction list updated in real-time, count:', snapshot.size);
+                        const directionList = document.getElementById('directionFormList');
+                        directionList.innerHTML = '';
+                        snapshot.forEach((doc) => {
+                            const form = doc.data();
+                            const div = document.createElement('div');
+                            div.classList.add('validation-section');
+                            div.innerHTML = `
+                                <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                                <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                                <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                                <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                                <p><strong>RH Validation :</strong> ${form.rh_name}</p>
+                                <div class="approved"><label><input type="radio" name="dir_${form.id}" value="approved" required> Accordé</label></div>
+                                <div class="rejected"><label><input type="radio" name="dir_${form.id}" value="rejected"> Refusé</label></div>
+                                <br>
+                                <label>Nom :</label><input type="text" id="dir_name_${form.id}" required>
+                                <label>Signature :</label><input type="text" id="dir_signature_${form.id}" required>
+                                <button data-id="${form.id}" onclick="validateDirection(${form.id})">Valider</button>
+                            `;
+                            directionList.appendChild(div);
+                        });
+                    }, (error) => {
+                        console.error('Error in Direction real-time listener:', error);
+                    });
+                window.unsubscribers.push(unsubscribeDirection);
+            } else if (window.loggedInRole === 'security') {
+                const unsubscribeSecurity = db.collection('visitors')
+                    .where('status', 'in', ['pending_security', 'approved', 'rejected'])
+                    .onSnapshot((snapshot) => {
+                        console.log('Security list updated in real-time, count:', snapshot.size);
+                        const securityList = document.getElementById('securityFormList');
+                        securityList.innerHTML = '';
+                        snapshot.forEach((doc) => {
+                            const form = doc.data();
+                            const div = document.createElement('div');
+                            div.classList.add('validation-section');
+                            if (form.status && form.status !== 'pending_security') {
+                                div.classList.add(form.status);
+                            }
+                            div.innerHTML = `
+                                <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                                <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                                <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
+                                <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                                <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                                <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
+                                <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
+                                ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
+                                ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
+                                <p><strong>Statut Final :</strong> ${form.status === 'pending_security' ? 'En attente de traitement' : (form.status === 'approved' ? '<span style="color: #28a745;">Approuvé</span>' : '<span style="color: #dc3545;">Refusé</span>')}</p>
+                            `;
+                            securityList.appendChild(div);
+                        });
+                    }, (error) => {
+                        console.error('Error in Security real-time listener:', error);
+                    });
+                window.unsubscribers.push(unsubscribeSecurity);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM fully loaded, initializing Firebase...');
             const firebaseConfig = {
@@ -796,6 +898,7 @@
                 window.forms = [];
                 window.currentSection = '';
                 window.loggedInRole = '';
+                window.unsubscribers = []; // Array to store unsubscribe functions
                 // Enable persistence for better cross-browser behavior
                 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
                     .then(() => console.log('Auth persistence set to LOCAL'))
@@ -835,9 +938,15 @@
 
             window.auth.onAuthStateChanged((user) => {
                 console.log('Auth state changed:', user ? 'Logged in' : 'Logged out', 'User:', user);
-                if (!user && window.loggedInRole) {
-                    console.log('User logged out, resetting role');
+                if (user && window.loggedInRole) {
+                    setupRealTimeListeners(); // Re-setup listeners on auth state change
+                } else if (!user && window.loggedInRole) {
+                    console.log('User logged out, resetting role and unsubscribing');
                     window.loggedInRole = '';
+                    if (window.unsubscribers) {
+                        window.unsubscribers.forEach(unsubscribe => unsubscribe());
+                        window.unsubscribers = [];
+                    }
                     showSection('visitor');
                 }
             });
