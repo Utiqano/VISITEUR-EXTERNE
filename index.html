@@ -16,6 +16,7 @@
             background-attachment: fixed;
             color: #333;
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
         .sidebar-container {
@@ -54,10 +55,12 @@
         .content {
             margin-left: 260px;
             padding: 30px;
-            background-color: rgba(255, 255, 255, 0.97);
+            background-color: rgba(255, 255, 255, 0.95);
             min-height: 100vh;
             animation: fadeIn 0.5s ease-in;
             transition: margin-left 0.3s ease-in-out;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         @keyframes fadeIn {
@@ -73,11 +76,16 @@
             background: #28a745;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 10px 15px;
             font-size: 1.5em;
             cursor: pointer;
             z-index: 1100;
             border-radius: 5px;
+            transition: transform 0.3s;
+        }
+
+        .hamburger:hover {
+            transform: scale(1.1);
         }
 
         .form-container, .rh-section, .direction-section, .security-section, .login-section {
@@ -101,6 +109,7 @@
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
         }
 
         label {
@@ -118,12 +127,13 @@
             border: 1px solid #ccc;
             border-radius: 6px;
             font-size: clamp(0.9rem, 2.5vw, 1rem);
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
             box-sizing: border-box;
         }
 
         input:focus, textarea:focus {
             border-color: #28a745;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
             outline: none;
         }
 
@@ -139,6 +149,9 @@
         .checkbox-group label {
             font-weight: normal;
             font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         button {
@@ -151,6 +164,7 @@
             font-size: clamp(0.9rem, 2.5vw, 1rem);
             transition: background-color 0.3s, transform 0.2s;
             animation: pulse 2s infinite;
+            margin-top: 15px;
         }
 
         button:hover {
@@ -164,7 +178,7 @@
         }
 
         .validation-section {
-            margin-top: 20px;
+            margin: 20px 0;
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -199,6 +213,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             animation: fadeIn 0.5s ease-in;
+            border: 1px solid #ddd;
         }
 
         .error {
@@ -207,6 +222,9 @@
             margin-bottom: 15px;
             font-weight: bold;
             font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+            padding: 10px;
+            background-color: #f8d7da;
+            border-radius: 5px;
         }
 
         h1, h3 {
@@ -215,6 +233,7 @@
             padding-bottom: 12px;
             font-weight: 600;
             font-size: clamp(1rem, 3vw, 1.5rem);
+            margin-bottom: 20px;
         }
 
         .archive-section {
@@ -227,6 +246,7 @@
             padding-bottom: 12px;
             font-weight: 600;
             font-size: clamp(1rem, 3vw, 1.5rem);
+            margin-bottom: 15px;
         }
 
         .security-section h1 {
@@ -234,25 +254,30 @@
             align-items: center;
             gap: 15px;
             font-size: clamp(1rem, 3vw, 1.5rem);
+            margin-bottom: 20px;
         }
 
         .security-section h1 img {
             width: clamp(40px, 10vw, 50px);
             height: clamp(40px, 10vw, 50px);
             animation: fadeIn 1s ease-in;
+            border-radius: 50%;
+            border: 2px solid #28a745;
         }
 
         .security-section .validation-section {
-            background-color: #e6f4ea;
-            border: 1px solid #28a745;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
             border-radius: 10px;
-            padding: 25px;
+            padding: 20px;
             margin-bottom: 20px;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .security-section .validation-section.approved {
             border-left: 5px solid #28a745;
+            background-color: #e6f4ea;
         }
 
         .security-section .validation-section.rejected {
@@ -260,9 +285,15 @@
             background-color: #f8d7da;
         }
 
+        .security-section .validation-section.pending-security {
+            border-left: 5px solid #ff9800;
+            background-color: #fff3e0;
+        }
+
         .security-section .validation-section p {
             margin: 10px 0;
             font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: #444;
         }
 
         .security-section .validation-section p strong {
@@ -331,6 +362,11 @@
 
             button {
                 width: 100%;
+            }
+
+            .security-section h1 img {
+                width: clamp(30px, 8vw, 40px);
+                height: clamp(30px, 8vw, 40px);
             }
         }
     </style>
@@ -567,7 +603,7 @@
                     console.log('RH validation updated in Firestore for ID:', id, 'New status:', updateData.status);
                     updateRHList();
                     if (rhDecision === 'approved') {
-                        updateDirectionList(); // Update Direction list
+                        updateDirectionList();
                         setTimeout(() => {
                             alert('Demande validée par RH, envoyée à Direction.');
                             showSection('direction');
@@ -603,7 +639,7 @@
                 dir_decision: dirDecision,
                 dir_name: dirName,
                 dir_signature: dirSignature,
-                status: 'pending_security',
+                status: dirDecision === 'approved' ? 'approved' : 'rejected',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
 
@@ -615,7 +651,7 @@
                         updateDirectionList();
                         updateSecurityList();
                         setTimeout(() => {
-                            alert(`Demande ${dirDecision === 'approved' ? 'validée' : 'refusée'} par Direction, envoyée à Sécurité.`);
+                            alert(`Demande ${dirDecision === 'approved' ? 'validée' : 'refusée'} par Direction.`);
                             showSection('security');
                         }, 500);
                     });
@@ -754,8 +790,24 @@
                         const form = doc.data();
                         const div = document.createElement('div');
                         div.classList.add('validation-section');
-                        if (form.status && form.status !== 'pending_security') {
-                            div.classList.add(form.status);
+                        if (form.status === 'approved') div.classList.add('approved');
+                        else if (form.status === 'rejected') div.classList.add('rejected');
+                        else if (form.status === 'pending_security') {
+                            div.classList.add('pending-security');
+                            if (form.rh_decision === 'rejected') {
+                                div.classList.remove('pending-security');
+                                div.classList.add('rejected');
+                            }
+                        }
+                        let statutFinal = '';
+                        if (form.status === 'pending_security' && form.rh_decision === 'rejected') {
+                            statutFinal = '<span style="color: #dc3545;">Refusé</span>';
+                        } else if (form.status === 'approved') {
+                            statutFinal = '<span style="color: #28a745;">Approuvé</span>';
+                        } else if (form.status === 'rejected') {
+                            statutFinal = '<span style="color: #dc3545;">Refusé</span>';
+                        } else if (form.status === 'pending_security' && (!form.rh_decision || form.rh_decision === 'approved')) {
+                            statutFinal = '<span style="color: #ff9800;">En attente de décision Direction</span>';
                         }
                         div.innerHTML = `
                             <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
@@ -767,7 +819,7 @@
                             <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
                             ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
                             ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
-                            <p><strong>Statut Final :</strong> ${form.status === 'pending_security' ? 'En attente de traitement' : (form.status === 'approved' ? '<span style="color: #28a745;">Approuvé</span>' : '<span style="color: #dc3545;">Refusé</span>')}</p>
+                            <p><strong>Statut Final :</strong> ${statutFinal}</p>
                         `;
                         securityList.appendChild(div);
                     });
@@ -854,8 +906,24 @@
                             const form = doc.data();
                             const div = document.createElement('div');
                             div.classList.add('validation-section');
-                            if (form.status && form.status !== 'pending_security') {
-                                div.classList.add(form.status);
+                            if (form.status === 'approved') div.classList.add('approved');
+                            else if (form.status === 'rejected') div.classList.add('rejected');
+                            else if (form.status === 'pending_security') {
+                                div.classList.add('pending-security');
+                                if (form.rh_decision === 'rejected') {
+                                    div.classList.remove('pending-security');
+                                    div.classList.add('rejected');
+                                }
+                            }
+                            let statutFinal = '';
+                            if (form.status === 'pending_security' && form.rh_decision === 'rejected') {
+                                statutFinal = '<span style="color: #dc3545;">Refusé</span>';
+                            } else if (form.status === 'approved') {
+                                statutFinal = '<span style="color: #28a745;">Approuvé</span>';
+                            } else if (form.status === 'rejected') {
+                                statutFinal = '<span style="color: #dc3545;">Refusé</span>';
+                            } else if (form.status === 'pending_security' && (!form.rh_decision || form.rh_decision === 'approved')) {
+                                statutFinal = '<span style="color: #ff9800;">En attente de décision Direction</span>';
                             }
                             div.innerHTML = `
                                 <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
@@ -867,7 +935,7 @@
                                 <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
                                 ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
                                 ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
-                                <p><strong>Statut Final :</strong> ${form.status === 'pending_security' ? 'En attente de traitement' : (form.status === 'approved' ? '<span style="color: #28a745;">Approuvé</span>' : '<span style="color: #dc3545;">Refusé</span>')}</p>
+                                <p><strong>Statut Final :</strong> ${statutFinal}</p>
                             `;
                             securityList.appendChild(div);
                         });
@@ -898,8 +966,7 @@
                 window.forms = [];
                 window.currentSection = '';
                 window.loggedInRole = '';
-                window.unsubscribers = []; // Array to store unsubscribe functions
-                // Enable persistence for better cross-browser behavior
+                window.unsubscribers = [];
                 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
                     .then(() => console.log('Auth persistence set to LOCAL'))
                     .catch((error) => console.error('Error setting persistence:', error));
@@ -939,7 +1006,7 @@
             window.auth.onAuthStateChanged((user) => {
                 console.log('Auth state changed:', user ? 'Logged in' : 'Logged out', 'User:', user);
                 if (user && window.loggedInRole) {
-                    setupRealTimeListeners(); // Re-setup listeners on auth state change
+                    setupRealTimeListeners();
                 } else if (!user && window.loggedInRole) {
                     console.log('User logged out, resetting role and unsubscribing');
                     window.loggedInRole = '';
