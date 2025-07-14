@@ -439,6 +439,7 @@
                 <h2>Archive RH</h2>
                 <div id="rhArchiveList"></div>
                 <button onclick="updateRHArchive()">Rafraîchir</button>
+                <button onclick="exportRHToExcel()">Exporter Excel</button>
             </div>
         </div>
         <div id="direction" class="direction-section">
@@ -448,6 +449,7 @@
                 <h2>Archive Direction</h2>
                 <div id="directionArchiveList"></div>
                 <button onclick="updateDirectionArchive()">Rafraîchir</button>
+                <button onclick="exportDirectionToExcel()">Exporter Excel</button>
             </div>
         </div>
         <div id="security" class="security-section">
@@ -826,6 +828,200 @@
                 })
                 .catch((error) => {
                     console.error('Error fetching Security list:', error);
+                });
+        }
+
+        function setupRealTimeListeners() {
+            console.log('Setting up real-time listeners for role:', window.loggedInRole);
+            if (window.unsubscribers) {
+                window.unsubscribers.forEach(unsubscribe => unsubscribe());
+            }
+            window.unsubscribers = [];
+
+            if (window.loggedInRole === 'rh') {
+                const unsubscribeRH = db.collection('visitors')
+                    .where('status', '==', 'pending_rh')
+                    .onSnapshot((snapshot) => {
+                        console.log('RH list updated in real-time, count:', snapshot.size);
+                        const rhList = document.getElementById('rhFormList');
+                        rhList.innerHTML = '';
+                        snapshot.forEach((doc) => {
+                            const form = doc.data();
+                            const div = document.createElement('div');
+                            div.classList.add('validation-section');
+                            div.innerHTML = `
+                                <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                                <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                                <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                                <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                                <div class="approved"><label><input type="radio" name="rh_${form.id}" value="approved" required> Accordé</label></div>
+                                <div class="rejected"><label><input type="radio" name="rh_${form.id}" value="rejected"> Refusé</label></div>
+                                <br>
+                                <label>Nom :</label><input type="text" id="rh_name_${form.id}" required>
+                                <label>Signature :</label><input type="text" id="rh_signature_${form.id}" required>
+                                <button data-id="${form.id}" onclick="validateRH(${form.id})">Valider</button>
+                            `;
+                            rhList.appendChild(div);
+                        });
+                    }, (error) => {
+                        console.error('Error in RH real-time listener:', error);
+                    });
+                window.unsubscribers.push(unsubscribeRH);
+            } else if (window.loggedInRole === 'direction') {
+                const unsubscribeDirection = db.collection('visitors')
+                    .where('status', '==', 'pending_direction')
+                    .onSnapshot((snapshot) => {
+                        console.log('Direction list updated in real-time, count:', snapshot.size);
+                        const directionList = document.getElementById('directionFormList');
+                        directionList.innerHTML = '';
+                        snapshot.forEach((doc) => {
+                            const form = doc.data();
+                            const div = document.createElement('div');
+                            div.classList.add('validation-section');
+                            div.innerHTML = `
+                                <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                                <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                                <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                                <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                                <p><strong>RH Validation :</strong> ${form.rh_name}</p>
+                                <div class="approved"><label><input type="radio" name="dir_${form.id}" value="approved" required> Accordé</label></div>
+                                <div class="rejected"><label><input type="radio" name="dir_${form.id}" value="rejected"> Refusé</label></div>
+                                <br>
+                                <label>Nom :</label><input type="text" id="dir_name_${form.id}" required>
+                                <label>Signature :</label><input type="text" id="dir_signature_${form.id}" required>
+                                <button data-id="${form.id}" onclick="validateDirection(${form.id})">Valider</button>
+                            `;
+                            directionList.appendChild(div);
+                        });
+                    }, (error) => {
+                        console.error('Error in Direction real-time listener:', error);
+                    });
+                window.unsubscribers.push(unsubscribeDirection);
+            } else if (window.loggedInRole === 'security') {
+                const unsubscribeSecurity = db.collection('visitors')
+                    .where('status', 'in', ['pending_security', 'approved', 'rejected'])
+                    .onSnapshot((snapshot) => {
+                        console.log('Security list updated in real-time, count:', snapshot.size);
+                        const securityList = document.getElementById('securityFormList');
+                        securityList.innerHTML = '';
+                        snapshot.forEach((doc) => {
+                            const form = doc.data();
+                            const div = document.createElement('div');
+                            div.classList.add('validation-section');
+                            if (form.status === 'approved') div.classList.add('approved');
+                            else if (form.status === 'rejected') div.classList.add('rejected');
+                            else if (form.status === 'pending_security') {
+                                div.classList.add('pending-security');
+                                if (form.rh_decision === 'rejected') {
+                                    div.classList.remove('pending-security');
+                                    div.classList.add('rejected');
+                                }
+                            }
+                            let statutFinal = '';
+                            if (form.status === 'pending_security' && form.rh_decision === 'rejected') {
+                                statutFinal = '<span style="color: #dc3545;">Refusé</span>';
+                            } else if (form.status === 'approved') {
+                                statutFinal = '<span style="color: #28a745;">Approuvé</span>';
+                            } else if (form.status === 'rejected') {
+                                statutFinal = '<span style="color: #dc3545;">Refusé</span>';
+                            } else if (form.status === 'pending_security' && (!form.rh_decision || form.rh_decision === 'approved')) {
+                                statutFinal = '<span style="color: #ff9800;">En attente de décision Direction</span>';
+                            }
+                            div.innerHTML = `
+                                <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                                <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                                <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
+                                <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                                <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                                <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
+                                <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
+                                ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
+                                ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
+                                <p><strong>Statut Final :</strong> ${statutFinal}</p>
+                            `;
+                            securityList.appendChild(div);
+                        });
+                    }, (error) => {
+                        console.error('Error in Security real-time listener:', error);
+                    });
+                window.unsubscribers.push(unsubscribeSecurity);
+            }
+        }
+
+        function exportRHToExcel() {
+            console.log('Exporting RH data to Excel...');
+            db.collection('visitors').get()
+                .then((querySnapshot) => {
+                    let data = [];
+                    querySnapshot.forEach((doc) => {
+                        const form = doc.data();
+                        data.push({
+                            'Demandeur': form.demandeur_nom || '',
+                            'Visiteur': form.visiteur_nom || '',
+                            'Motif': form.visiteur_motif || '',
+                            'Date': form.visiteur_date || '',
+                            'Décision RH': form.rh_name ? `${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}` : 'En attente',
+                            'Nom RH': form.rh_name || '',
+                            'Signature RH': form.rh_signature || ''
+                        });
+                    });
+
+                    let csv = 'Demandeur,Visiteur,Motif,Date,Décision RH,Nom RH,Signature RH\n';
+                    data.forEach(row => {
+                        csv += `${row['Demandeur']},${row['Visiteur']},${row['Motif']},${row['Date']},${row['Décision RH']},${row['Nom RH']},${row['Signature RH']}\n`;
+                    });
+
+                    const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' });
+                    const link = document.createElement('a');
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', 'RH_Validation_' + new Date().toISOString().slice(0, 10) + '.csv');
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                })
+                .catch((error) => {
+                    console.error('Error exporting RH data:', error);
+                    alert('Erreur lors de l\'exportation des données RH: ' + error.message);
+                });
+        }
+
+        function exportDirectionToExcel() {
+            console.log('Exporting Direction data to Excel...');
+            db.collection('visitors').get()
+                .then((querySnapshot) => {
+                    let data = [];
+                    querySnapshot.forEach((doc) => {
+                        const form = doc.data();
+                        data.push({
+                            'Demandeur': form.demandeur_nom || '',
+                            'Visiteur': form.visiteur_nom || '',
+                            'Motif': form.visiteur_motif || '',
+                            'Date': form.visiteur_date || '',
+                            'RH Validation': form.rh_name || '',
+                            'Décision Direction': form.dir_name ? `${form.dir_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.dir_name}` : 'En attente',
+                            'Nom Direction': form.dir_name || '',
+                            'Signature Direction': form.dir_signature || ''
+                        });
+                    });
+
+                    let csv = 'Demandeur,Visiteur,Motif,Date,RH Validation,Décision Direction,Nom Direction,Signature Direction\n';
+                    data.forEach(row => {
+                        csv += `${row['Demandeur']},${row['Visiteur']},${row['Motif']},${row['Date']},${row['RH Validation']},${row['Décision Direction']},${row['Nom Direction']},${row['Signature Direction']}\n`;
+                    });
+
+                    const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' });
+                    const link = document.createElement('a');
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', 'Direction_Validation_' + new Date().toISOString().slice(0, 10) + '.csv');
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                })
+                .catch((error) => {
+                    console.error('Error exporting Direction data:', error);
+                    alert('Erreur lors de l\'exportation des données Direction: ' + error.message);
                 });
         }
 
