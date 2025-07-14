@@ -402,6 +402,7 @@
             <div class="archive-section">
                 <h2>Archive RH</h2>
                 <div id="rhArchiveList"></div>
+                <button onclick="updateRHArchive()">Rafraîchir</button>
             </div>
         </div>
         <div id="direction" class="direction-section">
@@ -410,6 +411,7 @@
             <div class="archive-section">
                 <h2>Archive Direction</h2>
                 <div id="directionArchiveList"></div>
+                <button onclick="updateDirectionArchive()">Rafraîchir</button>
             </div>
         </div>
         <div id="security" class="security-section">
@@ -545,7 +547,7 @@
             }
             const rhDecision = document.querySelector(`input[name="rh_${id}"]:checked`).value;
             const rhName = document.getElementById(`rh_name_${id}`).value;
-            const rhSignature = document.getElementById(`rh_signature_${id}`).value; // Fixed to use id
+            const rhSignature = document.getElementById(`rh_signature_${id}`).value;
             if (!rhName || !rhSignature) {
                 alert('Veuillez remplir le nom et la signature.');
                 return;
@@ -563,9 +565,8 @@
                 .then(() => {
                     console.log('RH validation updated in Firestore for ID:', id, 'New status:', updateData.status);
                     updateRHList();
-                    updateRHArchive();
                     if (rhDecision === 'approved') {
-                        updateDirectionList();
+                        updateDirectionList(); // Automatically update Direction list when RH approves
                         setTimeout(() => {
                             alert('Demande validée par RH, envoyée à Direction.');
                             showSection('direction');
@@ -601,7 +602,7 @@
                 dir_decision: dirDecision,
                 dir_name: dirName,
                 dir_signature: dirSignature,
-                status: 'pending_security',
+                status: 'pending_security', // Always send to Security after Direction decision
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
 
@@ -611,8 +612,7 @@
                     return db.collection('visitors').doc(id.toString()).get().then(doc => {
                         console.log('Verified document after update:', doc.data());
                         updateDirectionList();
-                        updateDirectionArchive();
-                        updateSecurityList();
+                        updateSecurityList(); // Automatically update Security list
                         setTimeout(() => {
                             alert(`Demande ${dirDecision === 'approved' ? 'validée' : 'refusée'} par Direction, envoyée à Sécurité.`);
                             showSection('security');
@@ -657,7 +657,8 @@
         }
 
         function updateRHArchive() {
-            db.collection('visitors').where('rh_decision', '!=', null).get()
+            console.log('Updating RH archive...');
+            db.collection('visitors').get()
                 .then((querySnapshot) => {
                     const rhArchiveList = document.getElementById('rhArchiveList');
                     rhArchiveList.innerHTML = '';
@@ -670,9 +671,9 @@
                             <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
                             <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
                             <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                            <p><strong>Décision RH :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'}</p>
-                            <p><strong>Nom :</strong> ${form.rh_name}</p>
-                            <p><strong>Signature :</strong> ${form.rh_signature}</p>
+                            ${form.rh_name ? `<p><strong>Décision RH :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : '<p><strong>Décision RH :</strong> En attente</p>'}
+                            ${form.rh_name ? `<p><strong>Nom :</strong> ${form.rh_name}</p>` : ''}
+                            ${form.rh_signature ? `<p><strong>Signature :</strong> ${form.rh_signature}</p>` : ''}
                         `;
                         rhArchiveList.appendChild(div);
                     });
@@ -715,7 +716,8 @@
         }
 
         function updateDirectionArchive() {
-            db.collection('visitors').where('dir_decision', '!=', null).get()
+            console.log('Updating Direction archive...');
+            db.collection('visitors').get()
                 .then((querySnapshot) => {
                     const directionArchiveList = document.getElementById('directionArchiveList');
                     directionArchiveList.innerHTML = '';
@@ -728,9 +730,9 @@
                             <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
                             <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
                             <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                            <p><strong>Décision Direction :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusé'}</p>
-                            <p><strong>Nom :</strong> ${form.dir_name}</p>
-                            <p><strong>Signature :</strong> ${form.dir_signature}</p>
+                            ${form.dir_name ? `<p><strong>Décision Direction :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.dir_name}</p>` : '<p><strong>Décision Direction :</strong> En attente</p>'}
+                            ${form.dir_name ? `<p><strong>Nom :</strong> ${form.dir_name}</p>` : ''}
+                            ${form.dir_signature ? `<p><strong>Signature :</strong> ${form.dir_signature}</p>` : ''}
                         `;
                         directionArchiveList.appendChild(div);
                     });
