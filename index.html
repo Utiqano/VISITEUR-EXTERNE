@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.firebaseio.com https://*.firebasedatabase.app 'unsafe-inline'; connect-src 'self' https://*.firebaseio.com https://*.firebasedatabase.app https://firestore.googleapis.com https://*.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://media.licdn.com https://ith-gmbh.de;">
     <title>Page d'Accueil - Gestion des Visiteurs</title>
@@ -21,18 +21,19 @@
 
         .sidebar-container {
             position: relative;
+            z-index: 1001;
         }
 
         .sidebar {
             width: 250px;
             height: 100vh;
-            background: linear-gradient(180deg, #1a1a1a, #333);
-            color: white;
+            background: linear-gradient(180deg, #1a1a1a, #2d2d2d);
+            color: #f0f0f0;
             position: fixed;
             top: 0;
             left: 0;
             padding-top: 20px;
-            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.4);
             transition: transform 0.3s ease-in-out;
             z-index: 1000;
         }
@@ -42,25 +43,43 @@
             cursor: pointer;
             padding: 15px;
             margin: 0;
-            border-bottom: 1px solid #555;
-            font-size: 1.2em;
-            transition: background-color 0.3s, transform 0.2s;
+            border-bottom: 2px solid #444;
+            font-size: 1.3em;
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+            position: relative;
         }
 
         .sidebar h2:hover {
             background-color: #28a745;
-            transform: scale(1.05);
+            color: #fff;
+            transform: scale(1.06);
+        }
+
+        .sidebar h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 20%;
+            width: 60%;
+            height: 2px;
+            background: #28a745;
+            transform: scaleX(0);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .sidebar h2:hover::after {
+            transform: scaleX(1);
         }
 
         .content {
             margin-left: 260px;
-            padding: 30px;
+            padding: 40px;
             background-color: rgba(255, 255, 255, 0.95);
             min-height: 100vh;
-            animation: fadeIn 0.5s ease-in;
+            animation: fadeIn 0.6s ease-in-out;
             transition: margin-left 0.3s ease-in-out;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
 
         @keyframes fadeIn {
@@ -71,21 +90,23 @@
         .hamburger {
             display: none;
             position: fixed;
-            top: 10px;
-            left: 10px;
-            background: #28a745;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, #28a745, #218838);
             color: white;
             border: none;
-            padding: 10px 15px;
-            font-size: 1.5em;
+            padding: 12px 18px;
+            font-size: 1.6em;
             cursor: pointer;
             z-index: 1100;
-            border-radius: 5px;
-            transition: transform 0.3s;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
         .hamburger:hover {
-            transform: scale(1.1);
+            transform: scale(1.12);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.5);
         }
 
         .form-container, .rh-section, .direction-section, .security-section, .login-section {
@@ -94,11 +115,11 @@
 
         .form-container.active, .rh-section.active, .direction-section.active, .security-section.active, .login-section.active {
             display: block;
-            animation: slideIn 0.5s ease-in;
+            animation: slideIn 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
 
         @keyframes slideIn {
-            from { transform: translateY(20px); opacity: 0; }
+            from { transform: translateY(30px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
 
@@ -106,204 +127,323 @@
             max-width: 90%;
             margin: 0 auto;
             background-color: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            border: 1px solid #ddd;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
         }
 
         label {
             display: block;
-            margin: 15px 0 5px;
-            font-weight: bold;
-            color: #333;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            margin: 18px 0 8px;
+            font-weight: 600;
+            color: #444;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
         }
 
         input, textarea, select {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            transition: border-color 0.3s, box-shadow 0.3s;
+            padding: 14px;
+            margin-bottom: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
             box-sizing: border-box;
         }
 
         input:focus, textarea:focus {
             border-color: #28a745;
-            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.6);
+            background-color: #f9fff9;
             outline: none;
         }
 
         textarea {
             resize: vertical;
-            min-height: 120px;
+            min-height: 150px;
         }
 
         .checkbox-group {
-            margin: 20px 0;
+            margin: 25px 0;
         }
 
         .checkbox-group label {
-            font-weight: normal;
-            font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+            font-weight: 500;
+            font-size: clamp(0.9rem, 2.2vw, 1rem);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            color: #555;
         }
 
         button {
-            padding: 12px 24px;
-            background-color: #28a745;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #28a745, #218838);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            transition: background-color 0.3s, transform 0.2s;
-            animation: pulse 2s infinite;
-            margin-top: 15px;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+            animation: pulse 2.5s infinite;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
         }
 
         button:hover {
-            background-color: #218838;
-            transform: scale(1.05);
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: scale(1.06);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.5);
         }
 
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.08); }
         }
 
         .validation-section {
-            margin: 20px 0;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 25px 0;
+            padding: 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background-color: #fafafa;
+            transition: transform 0.3s, box-shadow 0.3s;
             width: 100%;
             box-sizing: border-box;
+            overflow: hidden;
         }
 
         .validation-section:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         }
 
         .approved label {
             color: #28a745;
-            font-weight: bold;
-            transition: color 0.3s;
+            font-weight: 600;
         }
 
         .rejected label {
             color: #dc3545;
-            font-weight: bold;
-            transition: color 0.3s;
+            font-weight: 600;
         }
 
         .login-form {
             max-width: 90%;
-            margin: 50px auto;
-            padding: 25px;
+            margin: 60px auto;
+            padding: 30px;
             background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 0.5s ease-in;
-            border: 1px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.6s ease-in-out;
+            border: 1px solid #e0e0e0;
         }
 
         .error {
             color: #dc3545;
             text-align: center;
-            margin-bottom: 15px;
-            font-weight: bold;
-            font-size: clamp(0.85rem, 2.2vw, 0.95rem);
-            padding: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: clamp(0.9rem, 2.2vw, 1rem);
+            padding: 12px;
             background-color: #f8d7da;
-            border-radius: 5px;
+            border-radius: 6px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
         h1, h3 {
-            color: #333;
-            border-bottom: 3px solid #28a745;
-            padding-bottom: 12px;
-            font-weight: 600;
-            font-size: clamp(1rem, 3vw, 1.5rem);
-            margin-bottom: 20px;
+            color: #444;
+            border-bottom: 4px solid #28a745;
+            padding-bottom: 15px;
+            font-weight: 700;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        h1::after, h3::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #28a745, #218838);
+            transform: scaleX(0);
+            transition: transform 0.4s ease-in-out;
+        }
+
+        h1:hover::after, h3:hover::after {
+            transform: scaleX(1);
         }
 
         .archive-section {
-            margin-top: 30px;
+            margin-top: 35px;
+            padding-top: 20px;
+            border-top: 2px dashed #ddd;
+            display: none; /* Hidden by default */
+        }
+
+        .archive-section.active {
+            display: block;
+            animation: slideIn 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
 
         .archive-section h2 {
-            color: #333;
-            border-bottom: 3px solid #28a745;
-            padding-bottom: 12px;
-            font-weight: 600;
-            font-size: clamp(1rem, 3vw, 1.5rem);
-            margin-bottom: 15px;
+            color: #444;
+            border-bottom: 4px solid #28a745;
+            padding-bottom: 15px;
+            font-weight: 700;
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .archive-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #28a745, #218838);
+            transform: scaleX(0);
+            transition: transform 0.4s ease-in-out;
+        }
+
+        .archive-section h2:hover::after {
+            transform: scaleX(1);
         }
 
         .security-section h1 {
             display: flex;
             align-items: center;
-            gap: 15px;
-            font-size: clamp(1rem, 3vw, 1.5rem);
-            margin-bottom: 20px;
+            gap: 20px;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            margin-bottom: 25px;
         }
 
         .security-section h1 img {
-            width: clamp(40px, 10vw, 50px);
-            height: clamp(40px, 10vw, 50px);
-            animation: fadeIn 1s ease-in;
+            width: clamp(50px, 10vw, 60px);
+            height: clamp(50px, 10vw, 60px);
+            animation: rotateIn 1s ease-in-out;
             border-radius: 50%;
-            border: 2px solid #28a745;
+            border: 3px solid #28a745;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        @keyframes rotateIn {
+            from { transform: rotate(-10deg) scale(0.9); opacity: 0; }
+            to { transform: rotate(0) scale(1); opacity: 1; }
         }
 
         .security-section .validation-section {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+            border: 2px solid #87ceeb;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.4s ease;
             position: relative;
+            box-shadow: 0 4px 15px rgba(135, 206, 235, 0.4);
+        }
+
+        .security-section .validation-section:hover {
+            transform: scale(1.04);
+            box-shadow: 0 8px 25px rgba(135, 206, 235, 0.6);
         }
 
         .security-section .validation-section.approved {
-            border-left: 5px solid #28a745;
-            background-color: #e6f4ea;
+            border-left: 6px solid #28a745;
+            background: linear-gradient(135deg, #e6f4ea, #d4ead8);
         }
 
         .security-section .validation-section.rejected {
-            border-left: 5px solid #dc3545;
-            background-color: #f8d7da;
+            border-left: 6px solid #dc3545;
+            background: linear-gradient(135deg, #f8d7da, #f0c6ca);
         }
 
         .security-section .validation-section.pending-security {
-            border-left: 5px solid #ff9800;
-            background-color: #fff3e0;
+            border-left: 6px solid #ff9800;
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
         }
 
         .security-section .validation-section p {
-            margin: 10px 0;
-            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-            color: #444;
+            margin: 12px 0;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            color: #333;
+            animation: fadeInText 0.6s ease-in-out;
+            line-height: 1.8;
+        }
+
+        @keyframes fadeInText {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .security-section .validation-section p strong {
-            color: #333;
+            color: #222;
+            font-weight: 700;
         }
 
-        /* Media Queries for Responsiveness */
+        .security-section #securityNewList .validation-section {
+            background: linear-gradient(135deg, #e6f3ff, #d9e7ff);
+            border-top: 4px solid #87ceeb;
+            border-bottom: 4px solid #87ceeb;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .security-section #securityNewList .validation-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(135, 206, 235, 0.3), rgba(255, 255, 255, 0.2));
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            20% { left: 0%; }
+            100% { left: 100%; }
+        }
+
+        .security-section #securityNewList .validation-section:hover::before {
+            animation-play-state: paused;
+        }
+
+        /* Enhanced Media Queries for Mobile Responsiveness */
+        @media (max-width: 1024px) {
+            .content {
+                margin-left: 0;
+                padding: 30px;
+            }
+
+            .sidebar {
+                width: 220px;
+            }
+
+            .security-section h1 img {
+                width: clamp(40px, 8vw, 50px);
+                height: clamp(40px, 8vw, 50px);
+            }
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
+                width: 200px;
             }
 
             .sidebar.active {
@@ -312,61 +452,145 @@
 
             .hamburger {
                 display: block;
+                top: 10px;
+                left: 10px;
+                padding: 10px 15px;
+                font-size: 1.4em;
             }
 
             .content {
                 margin-left: 0;
                 padding: 15px;
-            }
-
-            .sidebar {
-                width: 200px;
+                border-radius: 0;
             }
 
             form {
                 padding: 15px;
+                max-width: 100%;
             }
 
             input, textarea, select, button {
                 padding: 10px;
-                font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+                font-size: clamp(0.85rem, 2.2vw, 1rem);
             }
 
             .validation-section {
                 padding: 15px;
+                margin: 15px 0;
             }
 
             .security-section .validation-section {
                 padding: 15px;
             }
+
+            .security-section h1 img {
+                width: clamp(30px, 6vw, 40px);
+                height: clamp(30px, 6vw, 40px);
+            }
+
+            h1, h3, .archive-section h2 {
+                font-size: clamp(1rem, 2.5vw, 1.4rem);
+                margin-bottom: 15px;
+            }
         }
 
         @media (max-width: 480px) {
             .sidebar {
-                width: 100%;
+                width: 180px;
             }
 
             .hamburger {
                 font-size: 1.2em;
+                padding: 8px 12px;
+            }
+
+            .content {
+                padding: 10px;
+            }
+
+            form {
+                padding: 10px;
+            }
+
+            label {
+                margin: 12px 0 6px;
+                font-size: clamp(0.9rem, 2.2vw, 1rem);
+            }
+
+            input, textarea, select {
                 padding: 8px;
-            }
-
-            h1, h3, .archive-section h2 {
-                font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-            }
-
-            .login-form {
-                padding: 15px;
-                margin: 20px auto;
+                font-size: clamp(0.8rem, 2vw, 0.9rem);
             }
 
             button {
-                width: 100%;
+                padding: 10px 20px;
+                font-size: clamp(0.8rem, 2vw, 0.9rem);
+            }
+
+            .validation-section {
+                padding: 10px;
+                margin: 10px 0;
+            }
+
+            .security-section #securityNewList .validation-section {
+                padding: 10px;
+            }
+
+            .security-section h1 {
+                gap: 10px;
             }
 
             .security-section h1 img {
-                width: clamp(30px, 8vw, 40px);
-                height: clamp(30px, 8vw, 40px);
+                width: clamp(25px, 5vw, 30px);
+                height: clamp(25px, 5vw, 30px);
+            }
+
+            .login-form {
+                margin: 20px auto;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .sidebar {
+                width: 160px;
+            }
+
+            .sidebar h2 {
+                font-size: 1.1em;
+                padding: 10px;
+            }
+
+            .content {
+                padding: 8px;
+            }
+
+            form {
+                padding: 8px;
+            }
+
+            label {
+                margin: 10px 0 5px;
+            }
+
+            input, textarea, select {
+                padding: 6px;
+                font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+            }
+
+            button {
+                padding: 8px 16px;
+                font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+            }
+
+            .validation-section {
+                padding: 8px;
+                margin: 8px 0;
+            }
+
+            .security-section h1 img {
+                width: clamp(20px, 4vw, 25px);
+                height: clamp(20px, 4vw, 25px);
             }
         }
     </style>
@@ -435,21 +659,23 @@
         <div id="rh" class="rh-section">
             <h1>Validation RH</h1>
             <div id="rhFormList"></div>
-            <div class="archive-section">
+            <button onclick="updateRHArchive()">Rafraîchir</button>
+            <button id="rhArchiveToggle" onclick="toggleRHArchive()">Archiver</button>
+            <button onclick="exportRHToExcel()">Exporter Excel</button>
+            <div class="archive-section" id="rhArchiveSection">
                 <h2>Archive RH</h2>
                 <div id="rhArchiveList"></div>
-                <button onclick="updateRHArchive()">Rafraîchir</button>
-                <button onclick="exportRHToExcel()">Exporter Excel</button>
             </div>
         </div>
         <div id="direction" class="direction-section">
             <h1>Validation Direction</h1>
             <div id="directionFormList"></div>
-            <div class="archive-section">
+            <button onclick="updateDirectionArchive()">Rafraîchir</button>
+            <button id="directionArchiveToggle" onclick="toggleDirectionArchive()">Archiver</button>
+            <button onclick="exportDirectionToExcel()">Exporter Excel</button>
+            <div class="archive-section" id="directionArchiveSection">
                 <h2>Archive Direction</h2>
                 <div id="directionArchiveList"></div>
-                <button onclick="updateDirectionArchive()">Rafraîchir</button>
-                <button onclick="exportDirectionToExcel()">Exporter Excel</button>
             </div>
         </div>
         <div id="security" class="security-section">
@@ -457,8 +683,15 @@
                 <img src="https://media.licdn.com/dms/image/v2/D4E0BAQEEC9kI6mWkw/company-logo_200_200/company-logo_200_200/0/1719324183460/wkwde_logo?e=2147483647&v=beta&t=2lQJ0F4A_9oV2j8K5z7fB0z9z8K5z7fB0z9z8K5z7f" alt="Logo">
                 Section Sécurité
             </h1>
-            <div id="securityFormList"></div>
-            <button onclick="updateSecurityList()">Rafraîchir</button>
+            <h2>Nouvelles Demandes</h2>
+            <div id="securityNewList"></div>
+            <button onclick="updateSecurityNewList()">Rafraîchir</button>
+            <button id="securityArchiveToggle" onclick="toggleSecurityArchive()">Archiver</button>
+            <div class="archive-section" id="securityArchiveSection">
+                <h2>Archive</h2>
+                <div id="securityArchiveList"></div>
+                <button onclick="updateSecurityArchiveList()">Rafraîchir</button>
+            </div>
         </div>
         <div id="login" class="login-section">
             <div class="login-form">
@@ -596,9 +829,15 @@
                 rh_decision: rhDecision,
                 rh_name: rhName,
                 rh_signature: rhSignature,
-                status: rhDecision === 'approved' ? 'pending_direction' : 'pending_security',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
+
+            if (rhDecision === 'rejected') {
+                updateData.status = 'rejected';
+                updateData.final_status = 'Refusé';
+            } else if (rhDecision === 'approved') {
+                updateData.status = 'pending_direction';
+            }
 
             db.collection('visitors').doc(id.toString()).update(updateData)
                 .then(() => {
@@ -610,10 +849,10 @@
                             alert('Demande validée par RH, envoyée à Direction.');
                             showSection('direction');
                         }, 500);
-                    } else {
-                        updateSecurityList();
+                    } else if (rhDecision === 'rejected') {
+                        updateSecurityNewList();
                         setTimeout(() => {
-                            alert('Demande refusée par RH, envoyée à Sécurité.');
+                            alert('Demande refusée par RH.');
                             showSection('security');
                         }, 500);
                     }
@@ -651,7 +890,7 @@
                     return db.collection('visitors').doc(id.toString()).get().then(doc => {
                         console.log('Verified document after update:', doc.data());
                         updateDirectionList();
-                        updateSecurityList();
+                        updateSecurityNewList();
                         setTimeout(() => {
                             alert(`Demande ${dirDecision === 'approved' ? 'validée' : 'refusée'} par Direction.`);
                             showSection('security');
@@ -681,7 +920,7 @@
                             <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
                             <p><strong>Date :</strong> ${form.visiteur_date}</p>
                             <div class="approved"><label><input type="radio" name="rh_${form.id}" value="approved" required> Accordé</label></div>
-                            <div class="rejected"><label><input type="radio" name="rh_${form.id}" value="rejected"> Refusé</label></div>
+                            <div class="rejected"><label><input type="radio" name="rh_${id}" value="rejected"> Refusé</label></div>
                             <br>
                             <label>Nom :</label><input type="text" id="rh_name_${form.id}" required>
                             <label>Signature :</label><input type="text" id="rh_signature_${form.id}" required>
@@ -713,6 +952,7 @@
                             ${form.rh_name ? `<p><strong>Décision RH :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : '<p><strong>Décision RH :</strong> En attente</p>'}
                             ${form.rh_name ? `<p><strong>Nom :</strong> ${form.rh_name}</p>` : ''}
                             ${form.rh_signature ? `<p><strong>Signature :</strong> ${form.rh_signature}</p>` : ''}
+                            ${form.final_status ? `<p><strong>Statut Final :</strong> ${form.final_status}</p>` : ''}
                         `;
                         rhArchiveList.appendChild(div);
                     });
@@ -720,6 +960,18 @@
                 .catch((error) => {
                     console.error('Error fetching RH archive:', error);
                 });
+        }
+
+        function toggleRHArchive() {
+            const archiveSection = document.getElementById('rhArchiveSection');
+            const archiveToggle = document.getElementById('rhArchiveToggle');
+            archiveSection.classList.toggle('active');
+            if (archiveSection.classList.contains('active')) {
+                archiveToggle.textContent = 'Masquer';
+                updateRHArchive();
+            } else {
+                archiveToggle.textContent = 'Archiver';
+            }
         }
 
         function updateDirectionList() {
@@ -781,53 +1033,159 @@
                 });
         }
 
-        function updateSecurityList() {
-            console.log('Updating Security list...');
-            db.collection('visitors').where('status', 'in', ['pending_security', 'approved', 'rejected']).get()
+        function toggleDirectionArchive() {
+            const archiveSection = document.getElementById('directionArchiveSection');
+            const archiveToggle = document.getElementById('directionArchiveToggle');
+            archiveSection.classList.toggle('active');
+            if (archiveSection.classList.contains('active')) {
+                archiveToggle.textContent = 'Masquer';
+                updateDirectionArchive();
+            } else {
+                archiveToggle.textContent = 'Archiver';
+            }
+        }
+
+        function updateSecurityNewList() {
+            console.log('Updating Security new list...');
+            const now = new Date();
+            db.collection('visitors').where('status', 'in', ['approved', 'rejected', 'pending_security']).get()
                 .then((querySnapshot) => {
-                    console.log('Security forms count:', querySnapshot.size, 'Documents:', querySnapshot.docs.map(doc => doc.data()));
-                    const securityList = document.getElementById('securityFormList');
-                    securityList.innerHTML = '';
+                    console.log('Security new forms count:', querySnapshot.size);
+                    const securityNewList = document.getElementById('securityNewList');
+                    securityNewList.innerHTML = '';
                     querySnapshot.forEach((doc) => {
                         const form = doc.data();
-                        const div = document.createElement('div');
-                        div.classList.add('validation-section');
-                        if (form.status === 'approved') div.classList.add('approved');
-                        else if (form.status === 'rejected') div.classList.add('rejected');
-                        else if (form.status === 'pending_security') {
-                            div.classList.add('pending-security');
-                            if (form.rh_decision === 'rejected') {
-                                div.classList.remove('pending-security');
-                                div.classList.add('rejected');
+                        const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
+                        const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60); // Difference in hours
+                        if ((form.status === 'pending_security' && timeDiff < 48) || 
+                            ((form.status === 'approved' || form.status === 'rejected') && timeDiff < 48)) {
+                            const div = document.createElement('div');
+                            div.classList.add('validation-section');
+                            if (form.status === 'approved') div.classList.add('approved');
+                            else if (form.status === 'rejected') div.classList.add('rejected');
+                            else div.classList.add('pending-security');
+                            let statutFinal = '';
+                            if (form.status === 'pending_security') {
+                                statutFinal = '<span style="color: #ff9800;">En attente</span>';
+                            } else if (form.status === 'approved') {
+                                statutFinal = '<span style="color: #28a745;">Approuvé</span>';
+                            } else if (form.status === 'rejected') {
+                                statutFinal = '<span style="color: #dc3545;">Refusé</span>';
                             }
+                            div.innerHTML = `
+                                <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                                <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                                <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
+                                <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                                <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                                <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
+                                <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
+                                ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
+                                ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
+                                <p><strong>Statut Final :</strong> ${statutFinal}</p>
+                            `;
+                            securityNewList.appendChild(div);
                         }
-                        let statutFinal = '';
-                        if (form.status === 'pending_security' && form.rh_decision === 'rejected') {
-                            statutFinal = '<span style="color: #dc3545;">Refusé</span>';
-                        } else if (form.status === 'approved') {
-                            statutFinal = '<span style="color: #28a745;">Approuvé</span>';
-                        } else if (form.status === 'rejected') {
-                            statutFinal = '<span style="color: #dc3545;">Refusé</span>';
-                        } else if (form.status === 'pending_security' && (!form.rh_decision || form.rh_decision === 'approved')) {
-                            statutFinal = '<span style="color: #ff9800;">En attente de décision Direction</span>';
-                        }
-                        div.innerHTML = `
-                            <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                            <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                            <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
-                            <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                            <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                            <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
-                            <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
-                            ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
-                            ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
-                            <p><strong>Statut Final :</strong> ${statutFinal}</p>
-                        `;
-                        securityList.appendChild(div);
                     });
                 })
                 .catch((error) => {
-                    console.error('Error fetching Security list:', error);
+                    console.error('Error fetching Security new list:', error);
+                });
+        }
+
+        function updateSecurityArchiveList() {
+            console.log('Updating Security archive list...');
+            const now = new Date();
+            db.collection('visitors').where('status', 'in', ['approved', 'rejected', 'archived']).get()
+                .then((querySnapshot) => {
+                    console.log('Security archive forms count:', querySnapshot.size);
+                    const securityArchiveList = document.getElementById('securityArchiveList');
+                    securityArchiveList.innerHTML = '';
+                    querySnapshot.forEach((doc) => {
+                        const form = doc.data();
+                        const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
+                        const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60); // Difference in hours
+                        if (form.status === 'archived' || 
+                            ((form.status === 'approved' || form.status === 'rejected') && timeDiff >= 48)) {
+                            const div = document.createElement('div');
+                            div.classList.add('validation-section');
+                            if (form.status === 'approved') div.classList.add('approved');
+                            else if (form.status === 'rejected') div.classList.add('rejected');
+                            else if (form.status === 'archived') div.classList.add('pending-security');
+                            let statutFinal = '';
+                            if (form.status === 'archived') {
+                                statutFinal = '<span style="color: #ff9800;">Archivé</span>';
+                            } else if (form.status === 'approved') {
+                                statutFinal = '<span style="color: #28a745;">Approuvé</span>';
+                            } else if (form.status === 'rejected') {
+                                statutFinal = '<span style="color: #dc3545;">Refusé</span>';
+                            }
+                            div.innerHTML = `
+                                <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                                <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                                <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
+                                <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                                <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                                <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
+                                <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
+                                ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
+                                ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
+                                <p><strong>Statut Final :</strong> ${statutFinal}</p>
+                            `;
+                            securityArchiveList.appendChild(div);
+                        }
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error fetching Security archive list:', error);
+                });
+        }
+
+        function toggleSecurityArchive() {
+            const archiveSection = document.getElementById('securityArchiveSection');
+            const archiveToggle = document.getElementById('securityArchiveToggle');
+            archiveSection.classList.toggle('active');
+            if (archiveSection.classList.contains('active')) {
+                archiveToggle.textContent = 'Masquer';
+                updateSecurityArchiveList();
+            } else {
+                archiveToggle.textContent = 'Archiver';
+            }
+            archiveOldDecisions(); // Archive decisions over 48 hours when toggling
+        }
+
+        function archiveOldDecisions() {
+            console.log('Archiving old decisions...');
+            const now = new Date();
+            db.collection('visitors').where('status', 'in', ['approved', 'rejected']).get()
+                .then((querySnapshot) => {
+                    const updates = [];
+                    querySnapshot.forEach((doc) => {
+                        const form = doc.data();
+                        const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
+                        const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60); // Difference in hours
+                        if (timeDiff >= 48) {
+                            updates.push(db.collection('visitors').doc(doc.id).update({
+                                status: 'archived',
+                                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                            }));
+                        }
+                    });
+                    return Promise.all(updates)
+                        .then(() => {
+                            console.log('Old decisions archived successfully');
+                            updateSecurityNewList();
+                            updateSecurityArchiveList();
+                            alert('Décisions dépassant 48 heures ont été archivées.');
+                        })
+                        .catch((error) => {
+                            console.error('Error archiving decisions:', error);
+                            alert('Erreur lors de l\'archivage: ' + error.message);
+                        });
+                })
+                .catch((error) => {
+                    console.error('Error fetching decisions for archiving:', error);
+                    alert('Erreur lors de la récupération des décisions: ' + error.message);
                 });
         }
 
@@ -898,53 +1256,97 @@
                     });
                 window.unsubscribers.push(unsubscribeDirection);
             } else if (window.loggedInRole === 'security') {
-                const unsubscribeSecurity = db.collection('visitors')
-                    .where('status', 'in', ['pending_security', 'approved', 'rejected'])
+                const unsubscribeSecurityNew = db.collection('visitors')
+                    .where('status', 'in', ['approved', 'rejected', 'pending_security'])
                     .onSnapshot((snapshot) => {
-                        console.log('Security list updated in real-time, count:', snapshot.size);
-                        const securityList = document.getElementById('securityFormList');
-                        securityList.innerHTML = '';
+                        console.log('Security new list updated in real-time, count:', snapshot.size);
+                        const securityNewList = document.getElementById('securityNewList');
+                        securityNewList.innerHTML = '';
+                        const now = new Date();
                         snapshot.forEach((doc) => {
                             const form = doc.data();
-                            const div = document.createElement('div');
-                            div.classList.add('validation-section');
-                            if (form.status === 'approved') div.classList.add('approved');
-                            else if (form.status === 'rejected') div.classList.add('rejected');
-                            else if (form.status === 'pending_security') {
-                                div.classList.add('pending-security');
-                                if (form.rh_decision === 'rejected') {
-                                    div.classList.remove('pending-security');
-                                    div.classList.add('rejected');
+                            const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
+                            const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60); // Difference in hours
+                            if ((form.status === 'pending_security' && timeDiff < 48) || 
+                                ((form.status === 'approved' || form.status === 'rejected') && timeDiff < 48)) {
+                                const div = document.createElement('div');
+                                div.classList.add('validation-section');
+                                if (form.status === 'approved') div.classList.add('approved');
+                                else if (form.status === 'rejected') div.classList.add('rejected');
+                                else div.classList.add('pending-security');
+                                let statutFinal = '';
+                                if (form.status === 'pending_security') {
+                                    statutFinal = '<span style="color: #ff9800;">En attente</span>';
+                                } else if (form.status === 'approved') {
+                                    statutFinal = '<span style="color: #28a745;">Approuvé</span>';
+                                } else if (form.status === 'rejected') {
+                                    statutFinal = '<span style="color: #dc3545;">Refusé</span>';
                                 }
+                                div.innerHTML = `
+                                    <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                                    <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                                    <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
+                                    <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                                    <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                                    <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
+                                    <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
+                                    ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
+                                    ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
+                                    <p><strong>Statut Final :</strong> ${statutFinal}</p>
+                                `;
+                                securityNewList.appendChild(div);
                             }
-                            let statutFinal = '';
-                            if (form.status === 'pending_security' && form.rh_decision === 'rejected') {
-                                statutFinal = '<span style="color: #dc3545;">Refusé</span>';
-                            } else if (form.status === 'approved') {
-                                statutFinal = '<span style="color: #28a745;">Approuvé</span>';
-                            } else if (form.status === 'rejected') {
-                                statutFinal = '<span style="color: #dc3545;">Refusé</span>';
-                            } else if (form.status === 'pending_security' && (!form.rh_decision || form.rh_decision === 'approved')) {
-                                statutFinal = '<span style="color: #ff9800;">En attente de décision Direction</span>';
-                            }
-                            div.innerHTML = `
-                                <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                                <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                                <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
-                                <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                                <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                                <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
-                                <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
-                                ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
-                                ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
-                                <p><strong>Statut Final :</strong> ${statutFinal}</p>
-                            `;
-                            securityList.appendChild(div);
                         });
                     }, (error) => {
-                        console.error('Error in Security real-time listener:', error);
+                        console.error('Error in Security new real-time listener:', error);
                     });
-                window.unsubscribers.push(unsubscribeSecurity);
+                window.unsubscribers.push(unsubscribeSecurityNew);
+
+                const unsubscribeSecurityArchive = db.collection('visitors')
+                    .where('status', 'in', ['approved', 'rejected', 'archived'])
+                    .onSnapshot((snapshot) => {
+                        console.log('Security archive list updated in real-time, count:', snapshot.size);
+                        const securityArchiveList = document.getElementById('securityArchiveList');
+                        securityArchiveList.innerHTML = '';
+                        const now = new Date();
+                        snapshot.forEach((doc) => {
+                            const form = doc.data();
+                            const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
+                            const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60); // Difference in hours
+                            if (form.status === 'archived' || 
+                                ((form.status === 'approved' || form.status === 'rejected') && timeDiff >= 48)) {
+                                const div = document.createElement('div');
+                                div.classList.add('validation-section');
+                                if (form.status === 'approved') div.classList.add('approved');
+                                else if (form.status === 'rejected') div.classList.add('rejected');
+                                else if (form.status === 'archived') div.classList.add('pending-security');
+                                let statutFinal = '';
+                                if (form.status === 'archived') {
+                                    statutFinal = '<span style="color: #ff9800;">Archivé</span>';
+                                } else if (form.status === 'approved') {
+                                    statutFinal = '<span style="color: #28a745;">Approuvé</span>';
+                                } else if (form.status === 'rejected') {
+                                    statutFinal = '<span style="color: #dc3545;">Refusé</span>';
+                                }
+                                div.innerHTML = `
+                                    <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
+                                    <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
+                                    <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
+                                    <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
+                                    <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                                    <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
+                                    <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
+                                    ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
+                                    ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
+                                    <p><strong>Statut Final :</strong> ${statutFinal}</p>
+                                `;
+                                securityArchiveList.appendChild(div);
+                            }
+                        });
+                    }, (error) => {
+                        console.error('Error in Security archive real-time listener:', error);
+                    });
+                window.unsubscribers.push(unsubscribeSecurityArchive);
             }
         }
 
@@ -962,13 +1364,14 @@
                             'Date': form.visiteur_date || '',
                             'Décision RH': form.rh_name ? `${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}` : 'En attente',
                             'Nom RH': form.rh_name || '',
-                            'Signature RH': form.rh_signature || ''
+                            'Signature RH': form.rh_signature || '',
+                            'Statut Final': form.final_status || ''
                         });
                     });
 
-                    let csv = 'Demandeur,Visiteur,Motif,Date,Décision RH,Nom RH,Signature RH\n';
+                    let csv = 'Demandeur,Visiteur,Motif,Date,Décision RH,Nom RH,Signature RH,Statut Final\n';
                     data.forEach(row => {
-                        csv += `${row['Demandeur']},${row['Visiteur']},${row['Motif']},${row['Date']},${row['Décision RH']},${row['Nom RH']},${row['Signature RH']}\n`;
+                        csv += `${row['Demandeur']},${row['Visiteur']},${row['Motif']},${row['Date']},${row['Décision RH']},${row['Nom RH']},${row['Signature RH']},${row['Statut Final']}\n`;
                     });
 
                     const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' });
@@ -1023,123 +1426,6 @@
                     console.error('Error exporting Direction data:', error);
                     alert('Erreur lors de l\'exportation des données Direction: ' + error.message);
                 });
-        }
-
-        function setupRealTimeListeners() {
-            console.log('Setting up real-time listeners for role:', window.loggedInRole);
-            if (window.unsubscribers) {
-                window.unsubscribers.forEach(unsubscribe => unsubscribe());
-            }
-            window.unsubscribers = [];
-
-            if (window.loggedInRole === 'rh') {
-                const unsubscribeRH = db.collection('visitors')
-                    .where('status', '==', 'pending_rh')
-                    .onSnapshot((snapshot) => {
-                        console.log('RH list updated in real-time, count:', snapshot.size);
-                        const rhList = document.getElementById('rhFormList');
-                        rhList.innerHTML = '';
-                        snapshot.forEach((doc) => {
-                            const form = doc.data();
-                            const div = document.createElement('div');
-                            div.classList.add('validation-section');
-                            div.innerHTML = `
-                                <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                                <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                                <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                                <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                                <div class="approved"><label><input type="radio" name="rh_${form.id}" value="approved" required> Accordé</label></div>
-                                <div class="rejected"><label><input type="radio" name="rh_${form.id}" value="rejected"> Refusé</label></div>
-                                <br>
-                                <label>Nom :</label><input type="text" id="rh_name_${form.id}" required>
-                                <label>Signature :</label><input type="text" id="rh_signature_${form.id}" required>
-                                <button data-id="${form.id}" onclick="validateRH(${form.id})">Valider</button>
-                            `;
-                            rhList.appendChild(div);
-                        });
-                    }, (error) => {
-                        console.error('Error in RH real-time listener:', error);
-                    });
-                window.unsubscribers.push(unsubscribeRH);
-            } else if (window.loggedInRole === 'direction') {
-                const unsubscribeDirection = db.collection('visitors')
-                    .where('status', '==', 'pending_direction')
-                    .onSnapshot((snapshot) => {
-                        console.log('Direction list updated in real-time, count:', snapshot.size);
-                        const directionList = document.getElementById('directionFormList');
-                        directionList.innerHTML = '';
-                        snapshot.forEach((doc) => {
-                            const form = doc.data();
-                            const div = document.createElement('div');
-                            div.classList.add('validation-section');
-                            div.innerHTML = `
-                                <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                                <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                                <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                                <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                                <p><strong>RH Validation :</strong> ${form.rh_name}</p>
-                                <div class="approved"><label><input type="radio" name="dir_${form.id}" value="approved" required> Accordé</label></div>
-                                <div class="rejected"><label><input type="radio" name="dir_${form.id}" value="rejected"> Refusé</label></div>
-                                <br>
-                                <label>Nom :</label><input type="text" id="dir_name_${form.id}" required>
-                                <label>Signature :</label><input type="text" id="dir_signature_${form.id}" required>
-                                <button data-id="${form.id}" onclick="validateDirection(${form.id})">Valider</button>
-                            `;
-                            directionList.appendChild(div);
-                        });
-                    }, (error) => {
-                        console.error('Error in Direction real-time listener:', error);
-                    });
-                window.unsubscribers.push(unsubscribeDirection);
-            } else if (window.loggedInRole === 'security') {
-                const unsubscribeSecurity = db.collection('visitors')
-                    .where('status', 'in', ['pending_security', 'approved', 'rejected'])
-                    .onSnapshot((snapshot) => {
-                        console.log('Security list updated in real-time, count:', snapshot.size);
-                        const securityList = document.getElementById('securityFormList');
-                        securityList.innerHTML = '';
-                        snapshot.forEach((doc) => {
-                            const form = doc.data();
-                            const div = document.createElement('div');
-                            div.classList.add('validation-section');
-                            if (form.status === 'approved') div.classList.add('approved');
-                            else if (form.status === 'rejected') div.classList.add('rejected');
-                            else if (form.status === 'pending_security') {
-                                div.classList.add('pending-security');
-                                if (form.rh_decision === 'rejected') {
-                                    div.classList.remove('pending-security');
-                                    div.classList.add('rejected');
-                                }
-                            }
-                            let statutFinal = '';
-                            if (form.status === 'pending_security' && form.rh_decision === 'rejected') {
-                                statutFinal = '<span style="color: #dc3545;">Refusé</span>';
-                            } else if (form.status === 'approved') {
-                                statutFinal = '<span style="color: #28a745;">Approuvé</span>';
-                            } else if (form.status === 'rejected') {
-                                statutFinal = '<span style="color: #dc3545;">Refusé</span>';
-                            } else if (form.status === 'pending_security' && (!form.rh_decision || form.rh_decision === 'approved')) {
-                                statutFinal = '<span style="color: #ff9800;">En attente de décision Direction</span>';
-                            }
-                            div.innerHTML = `
-                                <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                                <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                                <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
-                                <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                                <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                                <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
-                                <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
-                                ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
-                                ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
-                                <p><strong>Statut Final :</strong> ${statutFinal}</p>
-                            `;
-                            securityList.appendChild(div);
-                        });
-                    }, (error) => {
-                        console.error('Error in Security real-time listener:', error);
-                    });
-                window.unsubscribers.push(unsubscribeSecurity);
-            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -1213,6 +1499,39 @@
                     showSection('visitor');
                 }
             });
+
+            // Check and move decisions to archive after 48 hours automatically
+            setInterval(() => {
+                console.log('Checking for decisions to archive automatically...');
+                const now = new Date();
+                db.collection('visitors').where('status', 'in', ['approved', 'rejected']).get()
+                    .then((querySnapshot) => {
+                        const updates = [];
+                        querySnapshot.forEach((doc) => {
+                            const form = doc.data();
+                            const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
+                            const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60); // Difference in hours
+                            if (timeDiff >= 48) {
+                                updates.push(db.collection('visitors').doc(doc.id).update({
+                                    status: 'archived',
+                                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                                }));
+                            }
+                        });
+                        return Promise.all(updates)
+                            .then(() => {
+                                console.log('Automatic archiving completed');
+                                updateSecurityNewList();
+                                updateSecurityArchiveList();
+                            })
+                            .catch((error) => {
+                                console.error('Error in automatic archiving:', error);
+                            });
+                    })
+                    .catch((error) => {
+                        console.error('Error checking archive status:', error);
+                    });
+            }, 3600000); // Check every hour (3600000 ms)
         });
     </script>
 </body>
