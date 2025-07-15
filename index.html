@@ -288,7 +288,7 @@
             margin-top: 35px;
             padding-top: 20px;
             border-top: 2px dashed #ddd;
-            display: none; /* Hidden by default */
+            display: none;
         }
 
         .archive-section.active {
@@ -423,7 +423,68 @@
             animation-play-state: paused;
         }
 
-        /* Enhanced Media Queries for Mobile Responsiveness */
+        .data-table-section {
+            margin-top: 35px;
+            padding-top: 20px;
+            border-top: 2px dashed #ddd;
+            display: none;
+        }
+
+        .data-table-section.active {
+            display: block;
+            animation: slideIn 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .data-table-section table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .data-table-section th,
+        .data-table-section td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: clamp(0.9rem, 2.2vw, 1rem);
+        }
+
+        .data-table-section th {
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .data-table-section tr:hover {
+            background-color: #f9f9f9;
+            transform: scale(1.01);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .data-table-section td.approved {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .data-table-section td.rejected {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .data-table-section td.pending-security {
+            color: #ff9800;
+            font-weight: 600;
+        }
+
+        .data-table-section td.archived {
+            color: #6c757d;
+            font-weight: 600;
+        }
+
         @media (max-width: 1024px) {
             .content {
                 margin-left: 0;
@@ -437,6 +498,10 @@
             .security-section h1 img {
                 width: clamp(40px, 8vw, 50px);
                 height: clamp(40px, 8vw, 50px);
+            }
+
+            .data-table-section table {
+                font-size: clamp(0.85rem, 2vw, 0.9rem);
             }
         }
 
@@ -491,6 +556,15 @@
             h1, h3, .archive-section h2 {
                 font-size: clamp(1rem, 2.5vw, 1.4rem);
                 margin-bottom: 15px;
+            }
+
+            .data-table-section table {
+                font-size: clamp(0.8rem, 2vw, 0.9rem);
+            }
+
+            .data-table-section th,
+            .data-table-section td {
+                padding: 10px;
             }
         }
 
@@ -549,6 +623,15 @@
                 margin: 20px auto;
                 padding: 15px;
             }
+
+            .data-table-section table {
+                font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+            }
+
+            .data-table-section th,
+            .data-table-section td {
+                padding: 8px;
+            }
         }
 
         @media (max-width: 320px) {
@@ -592,6 +675,15 @@
                 width: clamp(20px, 4vw, 25px);
                 height: clamp(20px, 4vw, 25px);
             }
+
+            .data-table-section table {
+                font-size: clamp(0.6rem, 1.6vw, 0.7rem);
+            }
+
+            .data-table-section th,
+            .data-table-section td {
+                padding: 6px;
+            }
         }
     </style>
 </head>
@@ -631,7 +723,7 @@
                 <label>Motif de la visite :</label>
                 <textarea name="visiteur_motif" required></textarea>
                 <label>Date de la visite :</label>
-                <input type="date" name="visiteur_date" required>
+                <input type="date" name="visiteur_date" id="visiteur_date" required>
                 <label>Heure d’arrivee prevue :</label>
                 <input type="time" name="visiteur_heure" required>
                 <label>Duree estimee :</label>
@@ -656,7 +748,7 @@
                 <button type="submit">Envoyer</button>
             </form>
         </div>
-      <img src="https://www.electrive.net/media/2017/04/wkw-automotive-logo-symbolbild-400x200.png" alt="WKW Automotive Logo">
+        <img src="https://www.electrive.net/media/2017/04/wkw-automotive-logo-symbolbild-400x200.png" alt="WKW Automotive Logo">
         <div id="rh" class="rh-section">
             <h1>Validation RH</h1>
             <div id="rhFormList"></div>
@@ -680,13 +772,27 @@
             </div>
         </div>
         <div id="security" class="security-section">
-            <h1>
-                Section Sécurité
-            </h1>
+            <h1>Section Sécurité</h1>
             <h2>Nouvelles Demandes</h2>
             <div id="securityNewList"></div>
             <button onclick="updateSecurityNewList()">Rafraîchir</button>
             <button id="securityArchiveToggle" onclick="toggleSecurityArchive()">Archiver</button>
+            <button id="securityDataToggle" onclick="showSecurityDataTable()">Data</button>
+            <div class="data-table-section" id="securityDataTable">
+                <h2>Liste des Visiteurs</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Visiteur</th>
+                            <th>Date</th>
+                            <th>Demandeur</th>
+                            <th>Entreprise</th>
+                            <th>Statut Final</th>
+                        </tr>
+                    </thead>
+                    <tbody id="securityDataTableBody"></tbody>
+                </table>
+            </div>
             <div class="archive-section" id="securityArchiveSection">
                 <h2>Archive</h2>
                 <div id="securityArchiveList"></div>
@@ -711,6 +817,82 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script>
+        function restrictPastDates() {
+            const dateInput = document.getElementById('visiteur_date');
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('min', today);
+        }
+
+        function submitForm(event) {
+            event.preventDefault();
+            const formData = new FormData(document.getElementById('visitorForm'));
+            const data = Object.fromEntries(formData);
+            const visiteurDate = new Date(data.visiteur_date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (visiteurDate < today) {
+                alert('Erreur : La date de la visite doit être aujourd\'hui ou une date future.');
+                return;
+            }
+            data.status = 'pending_rh';
+            data.id = Date.now();
+            data.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+
+            console.log('Submitting form with data:', data);
+            db.collection('visitors').doc(data.id.toString()).set(data)
+                .then(() => {
+                    console.log('Form submitted to Firestore with ID:', data.id);
+                    document.getElementById('visitorForm').reset();
+                    alert('Formulaire envoyé à RH pour validation.');
+                    updateRHList();
+                    showSection('rh');
+                })
+                .catch((error) => {
+                    console.error('Error submitting form:', error);
+                    alert('Erreur lors de l\'envoi du formulaire: ' + error.message);
+                });
+        }
+
+        function showSecurityDataTable() {
+            const dataTableSection = document.getElementById('securityDataTable');
+            const dataToggle = document.getElementById('securityDataToggle');
+            dataTableSection.classList.toggle('active');
+            if (dataTableSection.classList.contains('active')) {
+                dataToggle.textContent = 'Masquer Data';
+                db.collection('visitors').get()
+                    .then((querySnapshot) => {
+                        console.log('Security data table forms count:', querySnapshot.size);
+                        const tableBody = document.getElementById('securityDataTableBody');
+                        tableBody.innerHTML = '';
+                        querySnapshot.forEach((doc) => {
+                            const form = doc.data();
+                            const row = document.createElement('tr');
+                            let statutFinal = form.status;
+                            if (statutFinal === 'pending_rh') statutFinal = 'En attente RH';
+                            else if (statutFinal === 'pending_direction') statutFinal = 'En attente Direction';
+                            else if (statutFinal === 'pending_security') statutFinal = 'En attente Sécurité';
+                            else if (statutFinal === 'approved') statutFinal = 'Approuvé';
+                            else if (statutFinal === 'rejected') statutFinal = 'Refusé';
+                            else if (statutFinal === 'archived') statutFinal = 'Archivé';
+                            row.innerHTML = `
+                                <td>${form.visiteur_nom || 'N/A'}</td>
+                                <td>${form.visiteur_date || 'N/A'}</td>
+                                <td>${form.demandeur_nom || 'N/A'}</td>
+                                <td>${form.visiteur_entreprise || 'N/A'}</td>
+                                <td class="${form.status}">${statutFinal}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    })
+                    .catch((error) => {
+                        console.error('Error fetching security data table:', error);
+                        alert('Erreur lors de la récupération des données: ' + error.message);
+                    });
+            } else {
+                dataToggle.textContent = 'Data';
+            }
+        }
+
         function showSection(section) {
             console.log('showSection called with:', section, 'loggedInRole:', window.loggedInRole);
             if (section !== 'visitor' && !window.loggedInRole) {
@@ -786,29 +968,6 @@
                 .catch((error) => {
                     console.error('Login error:', error.code, error.message);
                     error.textContent = `Erreur: ${error.message}`;
-                });
-        }
-
-        function submitForm(event) {
-            event.preventDefault();
-            const formData = new FormData(document.getElementById('visitorForm'));
-            const data = Object.fromEntries(formData);
-            data.status = 'pending_rh';
-            data.id = Date.now();
-            data.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-
-            console.log('Submitting form with data:', data);
-            db.collection('visitors').doc(data.id.toString()).set(data)
-                .then(() => {
-                    console.log('Form submitted to Firestore with ID:', data.id);
-                    document.getElementById('visitorForm').reset();
-                    alert('Formulaire envoyé à RH pour validation.');
-                    updateRHList();
-                    showSection('rh');
-                })
-                .catch((error) => {
-                    console.error('Error submitting form:', error);
-                    alert('Erreur lors de l\'envoi du formulaire: ' + error.message);
                 });
         }
 
@@ -1056,7 +1215,7 @@
                     querySnapshot.forEach((doc) => {
                         const form = doc.data();
                         const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
-                        const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60); // Difference in hours
+                        const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60);
                         if ((form.status === 'pending_security' && timeDiff < 48) || 
                             ((form.status === 'approved' || form.status === 'rejected') && timeDiff < 48)) {
                             const div = document.createElement('div');
@@ -1104,7 +1263,7 @@
                     querySnapshot.forEach((doc) => {
                         const form = doc.data();
                         const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
-                        const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60); // Difference in hours
+                        const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60);
                         if (form.status === 'archived' || 
                             ((form.status === 'approved' || form.status === 'rejected') && timeDiff >= 48)) {
                             const div = document.createElement('div');
@@ -1163,7 +1322,7 @@
                     querySnapshot.forEach((doc) => {
                         const form = doc.data();
                         const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
-                        const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60); // Difference in hours
+                        const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60);
                         if (timeDiff >= 48) {
                             updates.push(db.collection('visitors').doc(doc.id).update({
                                 status: 'archived',
@@ -1266,7 +1425,7 @@
                         snapshot.forEach((doc) => {
                             const form = doc.data();
                             const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
-                            const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60); // Difference in hours
+                            const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60);
                             if ((form.status === 'pending_security' && timeDiff < 48) || 
                                 ((form.status === 'approved' || form.status === 'rejected') && timeDiff < 48)) {
                                 const div = document.createElement('div');
@@ -1312,7 +1471,7 @@
                         snapshot.forEach((doc) => {
                             const form = doc.data();
                             const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
-                            const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60); // Difference in hours
+                            const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60);
                             if (form.status === 'archived' || 
                                 ((form.status === 'approved' || form.status === 'rejected') && timeDiff >= 48)) {
                                 const div = document.createElement('div');
@@ -1483,9 +1642,11 @@
 
             document.getElementById('visitorForm').addEventListener('submit', submitForm);
 
+            restrictPastDates();
+
             showSection('visitor');
 
-            window.auth.onAuthStateChanged((user) => {
+           window.auth.onAuthStateChanged((user) => {
                 console.log('Auth state changed:', user ? 'Logged in' : 'Logged out', 'User:', user);
                 if (user && window.loggedInRole) {
                     setupRealTimeListeners();
