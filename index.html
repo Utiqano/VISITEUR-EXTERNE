@@ -735,9 +735,9 @@
             document.querySelectorAll('.content > div').forEach(div => div.classList.remove('active'));
             document.getElementById('login').classList.add('active');
             const emailInput = document.getElementById('email');
-            if (role === 'rh') emailInput.value = 'rh@wkw.com';
-            else if (role === 'direction') emailInput.value = 'direction@wkw.com';
-            else if (role === 'security') emailInput.value = 'securite@wkw.com';
+            if (role === 'rh') emailInput.value = 'Bedis.Sghair@wkw-group.com';
+            else if (role === 'direction') emailInput.value = 'Abdelkader.Klai@wkw-group.com';
+            else if (role === 'security') emailInput.value = 'Labib.Troudi@wkw-group.com';
             document.getElementById('password').value = '';
             emailInput.focus();
             if (window.innerWidth <= 768) {
@@ -764,9 +764,9 @@
                     console.log('Login successful for:', email, 'User UID:', userCredential.user.uid);
                     const user = userCredential.user;
                     let role;
-                    if (email === 'securite@wkw.com') role = 'security';
-                    else if (email === 'direction@wkw.com') role = 'direction';
-                    else if (email === 'rh@wkw.com') role = 'rh';
+                    if (email === 'bedis.sghair@wkw-group.com') role = 'rh';
+                    else if (email === 'abdelkader.klai@wkw-group.com') role = 'direction';
+                    else if (email === 'labib.troudi@wkw-group.com') role = 'security';
                     else {
                         window.auth.signOut();
                         throw new Error('Rôle non autorisé pour cet email.');
@@ -780,7 +780,7 @@
                             error.textContent = '';
                             document.getElementById('loginForm').reset();
                             showSection(window.currentSection || window.loggedInRole);
-                            setupRealTimeListeners(); // Set up listeners after login
+                            setupRealTimeListeners();
                         });
                 })
                 .catch((error) => {
@@ -920,7 +920,7 @@
                             <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
                             <p><strong>Date :</strong> ${form.visiteur_date}</p>
                             <div class="approved"><label><input type="radio" name="rh_${form.id}" value="approved" required> Accordé</label></div>
-                            <div class="rejected"><label><input type="radio" name="rh_${id}" value="rejected"> Refusé</label></div>
+                            <div class="rejected"><label><input type="radio" name="rh_${form.id}" value="rejected"> Refusé</label></div>
                             <br>
                             <label>Nom :</label><input type="text" id="rh_name_${form.id}" required>
                             <label>Signature :</label><input type="text" id="rh_signature_${form.id}" required>
@@ -1151,7 +1151,7 @@
             } else {
                 archiveToggle.textContent = 'Archiver';
             }
-            archiveOldDecisions(); // Archive decisions over 48 hours when toggling
+            archiveOldDecisions();
         }
 
         function archiveOldDecisions() {
@@ -1500,7 +1500,6 @@
                 }
             });
 
-            // Check and move decisions to archive after 48 hours automatically
             setInterval(() => {
                 console.log('Checking for decisions to archive automatically...');
                 const now = new Date();
