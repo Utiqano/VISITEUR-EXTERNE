@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.firebaseio.com https://*.firebasedatabase.app 'unsafe-inline'; connect-src 'self' https://*.firebaseio.com https://*.firebasedatabase.app https://firestore.googleapis.com https://*.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://media.licdn.com https://ith-gmbh.de;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.firebaseio.com https://*.firebasedatabase.app 'unsafe-inline'; connect-src 'self' https://*.firebaseio.com https://*.firebasedatabase.app https://firestore.googleapis.com https://*.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://media.licdn.com https://ith-gmbh.de https://www.electrive.net;">
     <title>Page d'Accueil - Gestion des Visiteurs</title>
     <style>
         body {
@@ -610,17 +610,17 @@
             <h1>DEMANDE D’AUTORISATION D’ACCÈS – VISITEUR EXTERNE</h1>
             <form id="visitorForm">
                 <h3>Informations sur le demandeur (employé interne)</h3>
-                <label>Nom et prénom :</label>
+                <label>Nom et prenom :</label>
                 <input type="text" name="demandeur_nom" required>
                 <label>Poste :</label>
                 <input type="text" name="demandeur_poste" required>
-                <label>Département / Service :</label>
+                <label>Departement / Service :</label>
                 <input type="text" name="demandeur_departement" required>
-                <label>Téléphone :</label>
+                <label>Telephone :</label>
                 <input type="text" name="demandeur_telephone" required>
 
                 <h3>Informations sur le visiteur</h3>
-                <label>Nom et prénom :</label>
+                <label>Nom et prenom :</label>
                 <input type="text" name="visiteur_nom" required>
                 <label>Entreprise / Organisation :</label>
                 <input type="text" name="visiteur_entreprise" required>
@@ -632,13 +632,13 @@
                 <textarea name="visiteur_motif" required></textarea>
                 <label>Date de la visite :</label>
                 <input type="date" name="visiteur_date" required>
-                <label>Heure d’arrivée prévue :</label>
+                <label>Heure d’arrivee prevue :</label>
                 <input type="time" name="visiteur_heure" required>
-                <label>Durée estimée :</label>
+                <label>Duree estimee :</label>
                 <input type="text" name="visiteur_duree" required>
 
-                <h3>Responsable interne accompagnateur (si différent du demandeur)</h3>
-                <label>Nom et prénom :</label>
+                <h3>Responsable interne accompagnateur (si different du demandeur)</h3>
+                <label>Nom et prenom :</label>
                 <input type="text" name="accompagnateur_nom">
                 <label>Poste / Service :</label>
                 <input type="text" name="accompagnateur_poste">
