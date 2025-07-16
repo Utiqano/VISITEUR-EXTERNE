@@ -79,7 +79,7 @@
             animation: fadeIn 0.6s ease-in-out;
             transition: margin-left 0.3s ease-in-out;
             border-radius: 12px;
-            box-shadow: 0  embassy: 6px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
 
         @keyframes fadeIn {
@@ -179,54 +179,140 @@
 
         button {
             padding: 14px 28px;
-            background: linear-gradient(135deg, #2185ff, #2185ff);
+            background: linear-gradient(135deg, #2185ff, #3b93ff);
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-size: clamp(1rem, 2.5vw, 1.1rem);
             transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
-            animation: pulse 2.5s infinite;
-            margin-top: 20px;
+            margin: 10px 10px 10px 0;
             box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
         }
 
         button:hover {
-            background: linear-gradient(135deg, #3b93ff, #3b93ff);
-            transform: scale(1.06);
+            background: linear-gradient(135deg, #3b93ff, #4ea1ff);
+            transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.5);
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
+        .archive-toggle.active {
+            background: linear-gradient(135deg, #28a745, #218838);
+        }
+
+        .archive-toggle.active:hover {
+            background: linear-gradient(135deg, #218838, #1c7a33);
         }
 
         .validation-section {
-            margin: 25px 0;
+            margin: 20px 0;
             padding: 25px;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
-            background-color: #fafafa;
+            background-color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
-            width: 100%;
-            box-sizing: border-box;
+            position: relative;
             overflow: hidden;
         }
 
         .validation-section:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
-        .approved label {
+        .validation-section p {
+            margin: 10px 0;
+            font-size: clamp(0.9rem, 2.2vw, 1rem);
+            color: #333;
+        }
+
+        .validation-section .approved label {
             color: #28a745;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .rejected label {
+        .validation-section .rejected label {
             color: #dc3545;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .validation-section input[type="radio"] {
+            margin-right: 8px;
+        }
+
+        .validation-section button {
+            margin-top: 15px;
+        }
+
+        .archive-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: none;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .archive-section.active {
+            display: block;
+            animation: archiveFadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes archiveFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .archive-section h2 {
+            color: #333;
+            font-size: clamp(1.1rem, 2.8vw, 1.6rem);
+            margin-bottom: 20px;
+            border-bottom: 3px solid #28a745;
+            padding-bottom: 10px;
+            position: relative;
+        }
+
+        .archive-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #28a745, #218838);
+            transition: width 0.3s ease;
+        }
+
+        .archive-section h2:hover::after {
+            width: 150px;
+        }
+
+        .archive-section .validation-section {
+            background: #ffffff;
+            border: 1px solid #e8ecef;
+            margin-bottom: 15px;
+            padding: 20px;
+            border-left: 4px solid #6c757d;
+        }
+
+        .archive-section .validation-section.approved {
+            border-left-color: #28a745;
+        }
+
+        .archive-section .validation-section.rejected {
+            border-left-color: #dc3545;
+        }
+
+        .archive-section .validation-section p {
+            margin: 8px 0;
         }
 
         .login-form {
@@ -284,44 +370,6 @@
             transform: scaleX(1);
         }
 
-        .archive-section {
-            margin-top: 35px;
-            padding-top: 20px;
-            border-top: 2px dashed #ddd;
-            display: none;
-        }
-
-        .archive-section.active {
-            display: block;
-            animation: slideIn 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
-        }
-
-        .archive-section h2 {
-            color: #444;
-            border-bottom: 4px solid #28a745;
-            padding-bottom: 15px;
-            font-weight: 700;
-            font-size: clamp(1.2rem, 3vw, 1.6rem);
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .archive-section h2::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #28a745, #218838);
-            transform: scaleX(0);
-            transition: transform 0.4s ease-in-out;
-        }
-
-        .archive-section h2:hover::after {
-            transform: scaleX(1);
-        }
-
         .security-section h1 {
             display: flex;
             align-items: center;
@@ -344,145 +392,157 @@
             to { transform: rotate(0) scale(1); opacity: 1; }
         }
 
-        .security-section .validation-section {
-            background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
-            border: 2px solid #87ceeb;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
-            transition: all 0.4s ease;
-            position: relative;
-            box-shadow: 0 4px 15px rgba(135, 206, 235, 0.4);
+        .security-section button {
+            margin-right: 15px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
-        .security-section .validation-section:hover {
-            transform: scale(1.04);
-            box-shadow: 0 8px 25px rgba(135, 206, 235, 0.6);
-        }
-
-        .security-section .validation-section.approved {
-            border-left: 6px solid #28a745;
-            background: linear-gradient(135deg, #e6f4ea, #d4ead8);
-        }
-
-        .security-section .validation-section.rejected {
-            border-left: 6px solid #dc3545;
-            background: linear-gradient(135deg, #f8d7da, #f0c6ca);
-        }
-
-        .security-section .validation-section.pending-security {
-            border-left: 6px solid #ff9800;
-            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
-        }
-
-        .security-section .validation-section p {
-            margin: 12px 0;
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
-            color: #333;
-            animation: fadeInText 0.6s ease-in-out;
-            line-height: 1.8;
-        }
-
-        @keyframes fadeInText {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .security-section .validation-section p strong {
-            color: #222;
-            font-weight: 700;
-        }
-
-        .security-section #securityNewList .validation-section {
-            background: linear-gradient(135deg, #e6f3ff, #d9e7ff);
-            border-top: 4px solid #87ceeb;
-            border-bottom: 4px solid #87ceeb;
-            padding: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .security-section #securityNewList .validation-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(135, 206, 235, 0.3), rgba(255, 255, 255, 0.2));
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            20% { left: 0%; }
-            100% { left: 100%; }
-        }
-
-        .security-section #securityNewList .validation-section:hover::before {
-            animation-play-state: paused;
+        .security-section button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
         }
 
         .data-table-section {
-            margin-top: 35px;
-            padding-top: 20px;
-            border-top: 2px dashed #ddd;
+            margin-top: 30px;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.5s ease, transform 0.5s ease;
             display: none;
+            overflow-x: auto;
         }
 
         .data-table-section.active {
             display: block;
-            animation: slideIn 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+            animation: tableFadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes tableFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .data-table-section h2 {
+            color: #333;
+            font-size: clamp(1.1rem, 2.8vw, 1.6rem);
+            margin-bottom: 20px;
+            border-bottom: 3px solid #28a745;
+            padding-bottom: 10px;
+            position: relative;
+        }
+
+        .data-table-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #28a745, #218838);
+            transition: width 0.3s ease;
+        }
+
+        .data-table-section h2:hover::after {
+            width: 150px;
         }
 
         .data-table-section table {
             width: 100%;
-            border-collapse: collapse;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #ffffff;
+            border-radius: 10px;
             overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
         }
 
         .data-table-section th,
         .data-table-section td {
-            padding: 15px;
+            padding: 15px 20px;
             text-align: left;
-            border-bottom: 1px solid #e0e0e0;
             font-size: clamp(0.9rem, 2.2vw, 1rem);
+            border-bottom: 1px solid #e8ecef;
+            transition: background-color 0.3s ease;
         }
 
         .data-table-section th {
             background: linear-gradient(135deg, #28a745, #218838);
-            color: #fff;
+            color: #ffffff;
             font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table-section tr:nth-child(even) {
+            background-color: #f8fafc;
         }
 
         .data-table-section tr:hover {
-            background-color: #f9f9f9;
+            background-color: #e6f4ea;
             transform: scale(1.01);
-            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .data-table-section td.approved {
             color: #28a745;
             font-weight: 600;
+            background: rgba(40, 167, 69, 0.1);
         }
 
         .data-table-section td.rejected {
             color: #dc3545;
             font-weight: 600;
+            background: rgba(220, 53, 69, 0.1);
         }
 
         .data-table-section td.pending-security {
             color: #ff9800;
             font-weight: 600;
+            background: rgba(255, 152, 0, 0.1);
+        }
+
+        .data-table-section td.pending-rh {
+            color: #007bff;
+            font-weight: 600;
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .data-table-section td.pending-direction {
+            color: #6f42c1;
+            font-weight: 600;
+            background: rgba(111, 66, 193, 0.1);
         }
 
         .data-table-section td.archived {
             color: #6c757d;
             font-weight: 600;
+            background: rgba(108, 117, 125, 0.1);
+        }
+
+        .form-container .logo {
+            display: block;
+            margin: 20px auto;
+            width: clamp(150px, 25vw, 200px);
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: logoFadeIn 1s ease-in-out;
+        }
+
+        @keyframes logoFadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .form-container:not(.active) .logo {
+            display: none;
         }
 
         @media (max-width: 1024px) {
@@ -500,8 +560,27 @@
                 height: clamp(40px, 8vw, 50px);
             }
 
-            .data-table-section table {
+            .data-table-section {
+                padding: 15px;
+            }
+
+            .data-table-section th,
+            .data-table-section td {
+                padding: 12px 15px;
                 font-size: clamp(0.85rem, 2vw, 0.9rem);
+            }
+
+            .form-container .logo {
+                width: clamp(120px, 20vw, 160px);
+                margin: 15px auto;
+            }
+
+            .validation-section {
+                padding: 20px;
+            }
+
+            .archive-section {
+                padding: 15px;
             }
         }
 
@@ -539,13 +618,24 @@
                 font-size: clamp(0.85rem, 2.2vw, 1rem);
             }
 
-            .validation-section {
-                padding: 15px;
-                margin: 15px 0;
+            .security-section button {
+                padding: 10px 20px;
+                margin-right: 10px;
             }
 
-            .security-section .validation-section {
-                padding: 15px;
+            .data-table-section {
+                padding: 10px;
+                overflow-x: auto;
+            }
+
+            .data-table-section table {
+                min-width: 600px;
+            }
+
+            .data-table-section th,
+            .data-table-section td {
+                padding: 10px 12px;
+                font-size: clamp(0.8rem, 2vw, 0.9rem);
             }
 
             .security-section h1 img {
@@ -553,18 +643,27 @@
                 height: clamp(30px, 6vw, 40px);
             }
 
-            h1, h3, .archive-section h2 {
+            h1, h3 {
                 font-size: clamp(1rem, 2.5vw, 1.4rem);
                 margin-bottom: 15px;
             }
 
-            .data-table-section table {
-                font-size: clamp(0.8rem, 2vw, 0.9rem);
+            .form-container .logo {
+                width: clamp(100px, 18vw, 140px);
+                margin: 10px auto;
             }
 
-            .data-table-section th,
-            .data-table-section td {
+            .validation-section {
+                padding: 15px;
+                margin: 15px 0;
+            }
+
+            .archive-section {
                 padding: 10px;
+            }
+
+            .archive-section .validation-section {
+                padding: 15px;
             }
         }
 
@@ -601,17 +700,19 @@
                 font-size: clamp(0.8rem, 2vw, 0.9rem);
             }
 
-            .validation-section {
-                padding: 10px;
-                margin: 10px 0;
+            .security-section button {
+                padding: 8px 16px;
+                margin-right: 8px;
             }
 
-            .security-section #securityNewList .validation-section {
-                padding: 10px;
+            .data-table-section {
+                padding: 8px;
             }
 
-            .security-section h1 {
-                gap: 10px;
+            .data-table-section th,
+            .data-table-section td {
+                padding: 8px 10px;
+                font-size: clamp(0.7rem, 1.8vw, 0.8rem);
             }
 
             .security-section h1 img {
@@ -624,13 +725,22 @@
                 padding: 15px;
             }
 
-            .data-table-section table {
-                font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+            .form-container .logo {
+                width: clamp(80px, 15vw, 120px);
+                margin: 8px auto;
             }
 
-            .data-table-section th,
-            .data-table-section td {
+            .validation-section {
+                padding: 12px;
+                margin: 10px 0;
+            }
+
+            .archive-section {
                 padding: 8px;
+            }
+
+            .archive-section .validation-section {
+                padding: 12px;
             }
         }
 
@@ -666,9 +776,14 @@
                 font-size: clamp(0.7rem, 1.8vw, 0.8rem);
             }
 
-            .validation-section {
-                padding: 8px;
-                margin: 8px 0;
+            .security-section button {
+                padding: 6px 12px;
+            }
+
+            .data-table-section th,
+            .data-table-section td {
+                padding: 6px 8px;
+                font-size: clamp(0.6rem, 1.6vw, 0.7rem);
             }
 
             .security-section h1 img {
@@ -676,13 +791,22 @@
                 height: clamp(20px, 4vw, 25px);
             }
 
-            .data-table-section table {
-                font-size: clamp(0.6rem, 1.6vw, 0.7rem);
+            .form-container .logo {
+                width: clamp(60px, 12vw, 100px);
+                margin: 6px auto;
             }
 
-            .data-table-section th,
-            .data-table-section td {
+            .validation-section {
+                padding: 10px;
+                margin: 8px 0;
+            }
+
+            .archive-section {
                 padding: 6px;
+            }
+
+            .archive-section .validation-section {
+                padding: 10px;
             }
         }
     </style>
@@ -700,6 +824,7 @@
     <div class="content">
         <div id="visitor" class="form-container">
             <h1>DEMANDE D’AUTORISATION D’ACCÈS – VISITEUR EXTERNE</h1>
+            <img src="https://www.electrive.net/media/2017/04/wkw-automotive-logo-symbolbild-400x200.png" alt="WKW Automotive Logo" class="logo">
             <form id="visitorForm">
                 <h3>Informations sur le demandeur (employé interne)</h3>
                 <label>Nom et prenom :</label>
@@ -748,13 +873,14 @@
                 <button type="submit">Envoyer</button>
             </form>
         </div>
-        <img src="https://www.electrive.net/media/2017/04/wkw-automotive-logo-symbolbild-400x200.png" alt="WKW Automotive Logo">
         <div id="rh" class="rh-section">
             <h1>Validation RH</h1>
+            <div class="button-group">
+                <button onclick="updateRHList()">Rafraîchir</button>
+                <button id="rhArchiveToggle" class="archive-toggle" onclick="toggleRHArchive()">Archiver</button>
+                <button onclick="exportRHToExcel()">Exporter Excel</button>
+            </div>
             <div id="rhFormList"></div>
-            <button onclick="updateRHArchive()">Rafraîchir</button>
-            <button id="rhArchiveToggle" onclick="toggleRHArchive()">Archiver</button>
-            <button onclick="exportRHToExcel()">Exporter Excel</button>
             <div class="archive-section" id="rhArchiveSection">
                 <h2>Archive RH</h2>
                 <div id="rhArchiveList"></div>
@@ -762,10 +888,12 @@
         </div>
         <div id="direction" class="direction-section">
             <h1>Validation Direction</h1>
+            <div class="button-group">
+                <button onclick="updateDirectionList()">Rafraîchir</button>
+                <button id="directionArchiveToggle" class="archive-toggle" onclick="toggleDirectionArchive()">Archiver</button>
+                <button onclick="exportDirectionToExcel()">Exporter Excel</button>
+            </div>
             <div id="directionFormList"></div>
-            <button onclick="updateDirectionArchive()">Rafraîchir</button>
-            <button id="directionArchiveToggle" onclick="toggleDirectionArchive()">Archiver</button>
-            <button onclick="exportDirectionToExcel()">Exporter Excel</button>
             <div class="archive-section" id="directionArchiveSection">
                 <h2>Archive Direction</h2>
                 <div id="directionArchiveList"></div>
@@ -1075,7 +1203,6 @@
                             <p><strong>Date :</strong> ${form.visiteur_date}</p>
                             <div class="approved"><label><input type="radio" name="rh_${form.id}" value="approved" required> Accordé</label></div>
                             <div class="rejected"><label><input type="radio" name="rh_${form.id}" value="rejected"> Refusé</label></div>
-                            <br>
                             <label>Nom :</label><input type="text" id="rh_name_${form.id}" required>
                             <label>Signature :</label><input type="text" id="rh_signature_${form.id}" required>
                             <button data-id="${form.id}" onclick="validateRH(${form.id})">Valider</button>
@@ -1090,19 +1217,19 @@
 
         function updateRHArchive() {
             console.log('Updating RH archive...');
-            db.collection('visitors').get()
+            db.collection('visitors').where('status', 'in', ['approved', 'rejected', 'archived']).get()
                 .then((querySnapshot) => {
                     const rhArchiveList = document.getElementById('rhArchiveList');
                     rhArchiveList.innerHTML = '';
                     querySnapshot.forEach((doc) => {
                         const form = doc.data();
                         const div = document.createElement('div');
-                        div.classList.add('validation-section');
+                        div.classList.add('validation-section', form.status);
                         div.innerHTML = `
-                            <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                            <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                            <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                            <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                            <p><strong>Demandeur :</strong> ${form.demandeur_nom || 'N/A'}</p>
+                            <p><strong>Visiteur :</strong> ${form.visiteur_nom || 'N/A'}</p>
+                            <p><strong>Motif :</strong> ${form.visiteur_motif || 'N/A'}</p>
+                            <p><strong>Date :</strong> ${form.visiteur_date || 'N/A'}</p>
                             ${form.rh_name ? `<p><strong>Décision RH :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : '<p><strong>Décision RH :</strong> En attente</p>'}
                             ${form.rh_name ? `<p><strong>Nom :</strong> ${form.rh_name}</p>` : ''}
                             ${form.rh_signature ? `<p><strong>Signature :</strong> ${form.rh_signature}</p>` : ''}
@@ -1113,6 +1240,7 @@
                 })
                 .catch((error) => {
                     console.error('Error fetching RH archive:', error);
+                    alert('Erreur lors de la récupération de l\'archive RH: ' + error.message);
                 });
         }
 
@@ -1120,6 +1248,7 @@
             const archiveSection = document.getElementById('rhArchiveSection');
             const archiveToggle = document.getElementById('rhArchiveToggle');
             archiveSection.classList.toggle('active');
+            archiveToggle.classList.toggle('active');
             if (archiveSection.classList.contains('active')) {
                 archiveToggle.textContent = 'Masquer';
                 updateRHArchive();
@@ -1147,7 +1276,6 @@
                             <p><strong>RH Validation :</strong> ${form.rh_name}</p>
                             <div class="approved"><label><input type="radio" name="dir_${form.id}" value="approved" required> Accordé</label></div>
                             <div class="rejected"><label><input type="radio" name="dir_${form.id}" value="rejected"> Refusé</label></div>
-                            <br>
                             <label>Nom :</label><input type="text" id="dir_name_${form.id}" required>
                             <label>Signature :</label><input type="text" id="dir_signature_${form.id}" required>
                             <button data-id="${form.id}" onclick="validateDirection(${form.id})">Valider</button>
@@ -1162,19 +1290,20 @@
 
         function updateDirectionArchive() {
             console.log('Updating Direction archive...');
-            db.collection('visitors').get()
+            db.collection('visitors').where('status', 'in', ['approved', 'rejected', 'archived']).get()
                 .then((querySnapshot) => {
                     const directionArchiveList = document.getElementById('directionArchiveList');
                     directionArchiveList.innerHTML = '';
                     querySnapshot.forEach((doc) => {
                         const form = doc.data();
                         const div = document.createElement('div');
-                        div.classList.add('validation-section');
+                        div.classList.add('validation-section', form.status);
                         div.innerHTML = `
-                            <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                            <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                            <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                            <p><strong>Date :</strong> ${form.visiteur_date}</p>
+                            <p><strong>Demandeur :</strong> ${form.demandeur_nom || 'N/A'}</p>
+                            <p><strong>Visiteur :</strong> ${form.visiteur_nom || 'N/A'}</p>
+                            <p><strong>Motif :</strong> ${form.visiteur_motif || 'N/A'}</p>
+                            <p><strong>Date :</strong> ${form.visiteur_date || 'N/A'}</p>
+                            ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
                             ${form.dir_name ? `<p><strong>Décision Direction :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.dir_name}</p>` : '<p><strong>Décision Direction :</strong> En attente</p>'}
                             ${form.dir_name ? `<p><strong>Nom :</strong> ${form.dir_name}</p>` : ''}
                             ${form.dir_signature ? `<p><strong>Signature :</strong> ${form.dir_signature}</p>` : ''}
@@ -1184,6 +1313,7 @@
                 })
                 .catch((error) => {
                     console.error('Error fetching Direction archive:', error);
+                    alert('Erreur lors de la récupération de l\'archive Direction: ' + error.message);
                 });
         }
 
@@ -1191,6 +1321,7 @@
             const archiveSection = document.getElementById('directionArchiveSection');
             const archiveToggle = document.getElementById('directionArchiveToggle');
             archiveSection.classList.toggle('active');
+            archiveToggle.classList.toggle('active');
             if (archiveSection.classList.contains('active')) {
                 archiveToggle.textContent = 'Masquer';
                 updateDirectionArchive();
@@ -1350,7 +1481,6 @@
                                 <p><strong>Date :</strong> ${form.visiteur_date}</p>
                                 <div class="approved"><label><input type="radio" name="rh_${form.id}" value="approved" required> Accordé</label></div>
                                 <div class="rejected"><label><input type="radio" name="rh_${form.id}" value="rejected"> Refusé</label></div>
-                                <br>
                                 <label>Nom :</label><input type="text" id="rh_name_${form.id}" required>
                                 <label>Signature :</label><input type="text" id="rh_signature_${form.id}" required>
                                 <button data-id="${form.id}" onclick="validateRH(${form.id})">Valider</button>
@@ -1380,7 +1510,6 @@
                                 <p><strong>RH Validation :</strong> ${form.rh_name}</p>
                                 <div class="approved"><label><input type="radio" name="dir_${form.id}" value="approved" required> Accordé</label></div>
                                 <div class="rejected"><label><input type="radio" name="dir_${form.id}" value="rejected"> Refusé</label></div>
-                                <br>
                                 <label>Nom :</label><input type="text" id="dir_name_${form.id}" required>
                                 <label>Signature :</label><input type="text" id="dir_signature_${form.id}" required>
                                 <button data-id="${form.id}" onclick="validateDirection(${form.id})">Valider</button>
