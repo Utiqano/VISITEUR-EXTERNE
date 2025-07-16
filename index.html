@@ -79,7 +79,7 @@
             animation: fadeIn 0.6s ease-in-out;
             transition: margin-left 0.3s ease-in-out;
             border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0  embassy: 6px 20px rgba(0, 0, 0, 0.15);
         }
 
         @keyframes fadeIn {
@@ -773,10 +773,6 @@
         </div>
         <div id="security" class="security-section">
             <h1>Section Sécurité</h1>
-            <h2>Nouvelles Demandes</h2>
-            <div id="securityNewList"></div>
-            <button onclick="updateSecurityNewList()">Rafraîchir</button>
-            <button id="securityArchiveToggle" onclick="toggleSecurityArchive()">Archiver</button>
             <button id="securityDataToggle" onclick="showSecurityDataTable()">Data</button>
             <button onclick="exportSecurityToExcel()">Exporter Excel</button>
             <div class="data-table-section" id="securityDataTable">
@@ -793,11 +789,6 @@
                     </thead>
                     <tbody id="securityDataTableBody"></tbody>
                 </table>
-            </div>
-            <div class="archive-section" id="securityArchiveSection">
-                <h2>Archive</h2>
-                <div id="securityArchiveList"></div>
-                <button onclick="updateSecurityArchiveList()">Rafraîchir</button>
             </div>
         </div>
         <div id="login" class="login-section">
@@ -1015,7 +1006,6 @@
                             showSection('direction');
                         }, 500);
                     } else if (rhDecision === 'rejected') {
-                        updateSecurityNewList();
                         setTimeout(() => {
                             alert('Demande refusée par RH.');
                             showSection('security');
@@ -1055,7 +1045,6 @@
                     return db.collection('visitors').doc(id.toString()).get().then(doc => {
                         console.log('Verified document after update:', doc.data());
                         updateDirectionList();
-                        updateSecurityNewList();
                         setTimeout(() => {
                             alert(`Demande ${dirDecision === 'approved' ? 'validée' : 'refusée'} par Direction.`);
                             showSection('security');
@@ -1208,150 +1197,6 @@
             } else {
                 archiveToggle.textContent = 'Archiver';
             }
-        }
-
-        function updateSecurityNewList() {
-            console.log('Updating Security new list...');
-            const now = new Date();
-            db.collection('visitors').where('status', 'in', ['approved', 'rejected', 'pending_security']).get()
-                .then((querySnapshot) => {
-                    console.log('Security new forms count:', querySnapshot.size);
-                    const securityNewList = document.getElementById('securityNewList');
-                    securityNewList.innerHTML = '';
-                    querySnapshot.forEach((doc) => {
-                        const form = doc.data();
-                        const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
-                        const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60);
-                        if ((form.status === 'pending_security' && timeDiff < 48) || 
-                            ((form.status === 'approved' || form.status === 'rejected') && timeDiff < 48)) {
-                            const div = document.createElement('div');
-                            div.classList.add('validation-section');
-                            if (form.status === 'approved') div.classList.add('approved');
-                            else if (form.status === 'rejected') div.classList.add('rejected');
-                            else div.classList.add('pending-security');
-                            let statutFinal = '';
-                            if (form.status === 'pending_security') {
-                                statutFinal = '<span style="color: #ff9800;">En attente</span>';
-                            } else if (form.status === 'approved') {
-                                statutFinal = '<span style="color: #28a745;">Approuvé</span>';
-                            } else if (form.status === 'rejected') {
-                                statutFinal = '<span style="color: #dc3545;">Refusé</span>';
-                            }
-                            div.innerHTML = `
-                                <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                                <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                                <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
-                                <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                                <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                                <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
-                                <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
-                                ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
-                                ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
-                                <p><strong>Statut Final :</strong> ${statutFinal}</p>
-                            `;
-                            securityNewList.appendChild(div);
-                        }
-                    });
-                })
-                .catch((error) => {
-                    console.error('Error fetching Security new list:', error);
-                });
-        }
-
-        function updateSecurityArchiveList() {
-            console.log('Updating Security archive list...');
-            const now = new Date();
-            db.collection('visitors').where('status', 'in', ['approved', 'rejected', 'archived']).get()
-                .then((querySnapshot) => {
-                    console.log('Security archive forms count:', querySnapshot.size);
-                    const securityArchiveList = document.getElementById('securityArchiveList');
-                    securityArchiveList.innerHTML = '';
-                    querySnapshot.forEach((doc) => {
-                        const form = doc.data();
-                        const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
-                        const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60);
-                        if (form.status === 'archived' || 
-                            ((form.status === 'approved' || form.status === 'rejected') && timeDiff >= 48)) {
-                            const div = document.createElement('div');
-                            div.classList.add('validation-section');
-                            if (form.status === 'approved') div.classList.add('approved');
-                            else if (form.status === 'rejected') div.classList.add('rejected');
-                            else if (form.status === 'archived') div.classList.add('pending-security');
-                            let statutFinal = '';
-                            if (form.status === 'archived') {
-                                statutFinal = '<span style="color: #ff9800;">Archivé</span>';
-                            } else if (form.status === 'approved') {
-                                statutFinal = '<span style="color: #28a745;">Approuvé</span>';
-                            } else if (form.status === 'rejected') {
-                                statutFinal = '<span style="color: #dc3545;">Refusé</span>';
-                            }
-                            div.innerHTML = `
-                                <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                                <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                                <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
-                                <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                                <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                                <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
-                                <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
-                                ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
-                                ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
-                                <p><strong>Statut Final :</strong> ${statutFinal}</p>
-                            `;
-                            securityArchiveList.appendChild(div);
-                        }
-                    });
-                })
-                .catch((error) => {
-                    console.error('Error fetching Security archive list:', error);
-                });
-        }
-
-        function toggleSecurityArchive() {
-            const archiveSection = document.getElementById('securityArchiveSection');
-            const archiveToggle = document.getElementById('securityArchiveToggle');
-            archiveSection.classList.toggle('active');
-            if (archiveSection.classList.contains('active')) {
-                archiveToggle.textContent = 'Masquer';
-                updateSecurityArchiveList();
-            } else {
-                archiveToggle.textContent = 'Archiver';
-            }
-            archiveOldDecisions();
-        }
-
-        function archiveOldDecisions() {
-            console.log('Archiving old decisions...');
-            const now = new Date();
-            db.collection('visitors').where('status', 'in', ['approved', 'rejected']).get()
-                .then((querySnapshot) => {
-                    const updates = [];
-                    querySnapshot.forEach((doc) => {
-                        const form = doc.data();
-                        const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
-                        const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60);
-                        if (timeDiff >= 48) {
-                            updates.push(db.collection('visitors').doc(doc.id).update({
-                                status: 'archived',
-                                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                            }));
-                        }
-                    });
-                    return Promise.all(updates)
-                        .then(() => {
-                            console.log('Old decisions archived successfully');
-                            updateSecurityNewList();
-                            updateSecurityArchiveList();
-                            alert('Décisions dépassant 48 heures ont été archivées.');
-                        })
-                        .catch((error) => {
-                            console.error('Error archiving decisions:', error);
-                            alert('Erreur lors de l\'archivage: ' + error.message);
-                        });
-                })
-                .catch((error) => {
-                    console.error('Error fetching decisions for archiving:', error);
-                    alert('Erreur lors de la récupération des décisions: ' + error.message);
-                });
         }
 
         function exportRHToExcel() {
@@ -1546,98 +1391,6 @@
                         console.error('Error in Direction real-time listener:', error);
                     });
                 window.unsubscribers.push(unsubscribeDirection);
-            } else if (window.loggedInRole === 'security') {
-                const unsubscribeSecurityNew = db.collection('visitors')
-                    .where('status', 'in', ['approved', 'rejected', 'pending_security'])
-                    .onSnapshot((snapshot) => {
-                        console.log('Security new list updated in real-time, count:', snapshot.size);
-                        const securityNewList = document.getElementById('securityNewList');
-                        securityNewList.innerHTML = '';
-                        const now = new Date();
-                        snapshot.forEach((doc) => {
-                            const form = doc.data();
-                            const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
-                            const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60);
-                            if ((form.status === 'pending_security' && timeDiff < 48) || 
-                                ((form.status === 'approved' || form.status === 'rejected') && timeDiff < 48)) {
-                                const div = document.createElement('div');
-                                div.classList.add('validation-section');
-                                if (form.status === 'approved') div.classList.add('approved');
-                                else if (form.status === 'rejected') div.classList.add('rejected');
-                                else div.classList.add('pending-security');
-                                let statutFinal = '';
-                                if (form.status === 'pending_security') {
-                                    statutFinal = '<span style="color: #ff9800;">En attente</span>';
-                                } else if (form.status === 'approved') {
-                                    statutFinal = '<span style="color: #28a745;">Approuvé</span>';
-                                } else if (form.status === 'rejected') {
-                                    statutFinal = '<span style="color: #dc3545;">Refusé</span>';
-                                }
-                                div.innerHTML = `
-                                    <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                                    <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                                    <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
-                                    <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                                    <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                                    <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
-                                    <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
-                                    ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
-                                    ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
-                                    <p><strong>Statut Final :</strong> ${statutFinal}</p>
-                                `;
-                                securityNewList.appendChild(div);
-                            }
-                        });
-                    }, (error) => {
-                        console.error('Error in Security new real-time listener:', error);
-                    });
-                window.unsubscribers.push(unsubscribeSecurityNew);
-
-                const unsubscribeSecurityArchive = db.collection('visitors')
-                    .where('status', 'in', ['approved', 'rejected', 'archived'])
-                    .onSnapshot((snapshot) => {
-                        console.log('Security archive list updated in real-time, count:', snapshot.size);
-                        const securityArchiveList = document.getElementById('securityArchiveList');
-                        securityArchiveList.innerHTML = '';
-                        const now = new Date();
-                        snapshot.forEach((doc) => {
-                            const form = doc.data();
-                            const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
-                            const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60);
-                            if (form.status === 'archived' || 
-                                ((form.status === 'approved' || form.status === 'rejected') && timeDiff >= 48)) {
-                                const div = document.createElement('div');
-                                div.classList.add('validation-section');
-                                if (form.status === 'approved') div.classList.add('approved');
-                                else if (form.status === 'rejected') div.classList.add('rejected');
-                                else if (form.status === 'archived') div.classList.add('pending-security');
-                                let statutFinal = '';
-                                if (form.status === 'archived') {
-                                    statutFinal = '<span style="color: #ff9800;">Archivé</span>';
-                                } else if (form.status === 'approved') {
-                                    statutFinal = '<span style="color: #28a745;">Approuvé</span>';
-                                } else if (form.status === 'rejected') {
-                                    statutFinal = '<span style="color: #dc3545;">Refusé</span>';
-                                }
-                                div.innerHTML = `
-                                    <p><strong>Demandeur :</strong> ${form.demandeur_nom}</p>
-                                    <p><strong>Visiteur :</strong> ${form.visiteur_nom}</p>
-                                    <p><strong>Entreprise :</strong> ${form.visiteur_entreprise}</p>
-                                    <p><strong>Motif :</strong> ${form.visiteur_motif}</p>
-                                    <p><strong>Date :</strong> ${form.visiteur_date}</p>
-                                    <p><strong>Heure :</strong> ${form.visiteur_heure}</p>
-                                    <p><strong>Durée :</strong> ${form.visiteur_duree}</p>
-                                    ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
-                                    ${form.dir_name ? `<p><strong>Direction Validation :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusée'} par ${form.dir_name}</p>` : ''}
-                                    <p><strong>Statut Final :</strong> ${statutFinal}</p>
-                                `;
-                                securityArchiveList.appendChild(div);
-                            }
-                        });
-                    }, (error) => {
-                        console.error('Error in Security archive real-time listener:', error);
-                    });
-                window.unsubscribers.push(unsubscribeSecurityArchive);
             }
         }
 
@@ -1646,7 +1399,7 @@
             const firebaseConfig = {
                 apiKey: "AIzaSyDz91WZo_FB3OUwJ09kQnSKHYM9cYpSZqI",
                 authDomain: "visiteur-externe.firebaseapp.com",
-                 projectId: "visiteur-externe",
+                projectId: "visiteur-externe",
                 storageBucket: "visiteur-externe.firebasestorage.app",
                 messagingSenderId: "304390681920",
                 appId: "1:304390681920:web:f77468807d31ae6008b6a5",
@@ -1700,7 +1453,7 @@
 
             showSection('visitor');
 
-           window.auth.onAuthStateChanged((user) => {
+            window.auth.onAuthStateChanged((user) => {
                 console.log('Auth state changed:', user ? 'Logged in' : 'Logged out', 'User:', user);
                 if (user && window.loggedInRole) {
                     setupRealTimeListeners();
@@ -1714,38 +1467,6 @@
                     showSection('visitor');
                 }
             });
-
-            setInterval(() => {
-                console.log('Checking for decisions to archive automatically...');
-                const now = new Date();
-                db.collection('visitors').where('status', 'in', ['approved', 'rejected']).get()
-                    .then((querySnapshot) => {
-                        const updates = [];
-                        querySnapshot.forEach((doc) => {
-                            const form = doc.data();
-                            const decisionTimestamp = form.timestamp?.toDate ? form.timestamp.toDate() : new Date();
-                            const timeDiff = (now - decisionTimestamp) / (1000 * 60 * 60); // Difference in hours
-                            if (timeDiff >= 48) {
-                                updates.push(db.collection('visitors').doc(doc.id).update({
-                                    status: 'archived',
-                                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                                }));
-                            }
-                        });
-                        return Promise.all(updates)
-                            .then(() => {
-                                console.log('Automatic archiving completed');
-                                updateSecurityNewList();
-                                updateSecurityArchiveList();
-                            })
-                            .catch((error) => {
-                                console.error('Error in automatic archiving:', error);
-                            });
-                    })
-                    .catch((error) => {
-                        console.error('Error checking archive status:', error);
-                    });
-            }, 3600000); // Check every hour (3600000 ms)
         });
     </script>
 </body>
