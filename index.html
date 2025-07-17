@@ -7,6 +7,7 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.firebaseio.com https://*.firebasedatabase.app 'unsafe-inline'; connect-src 'self' https://*.firebaseio.com https://*.firebasedatabase.app https://firestore.googleapis.com https://*.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://media.licdn.com https://ith-gmbh.de https://www.electrive.net;">
     <title>Page d'Accueil - Gestion des Visiteurs</title>
     <style>
+        /* Existing CSS remains unchanged */
         body {
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -47,6 +48,9 @@
             font-size: 1.3em;
             transition: background-color 0.3s, color 0.3s, transform 0.2s;
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .sidebar h2:hover {
@@ -69,6 +73,34 @@
 
         .sidebar h2:hover::after {
             transform: scaleX(1);
+        }
+
+        .notification-bubble {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #dc3545;
+            color: white;
+            font-size: 0.9em;
+            font-weight: 600;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .sidebar h2:hover .notification-bubble {
+            background-color: #ff4d4d;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .notification-bubble.hidden {
+            display: none;
         }
 
         .content {
@@ -186,7 +218,7 @@
             cursor: pointer;
             font-size: clamp(1rem, 2.5vw, 1.1rem);
             transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
-            margin: 10px 10px 10px 0;
+            margin-top: 20px;
             box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
         }
 
@@ -196,123 +228,31 @@
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.5);
         }
 
-        .archive-toggle.active {
-            background: linear-gradient(135deg, #28a745, #218838);
-        }
-
-        .archive-toggle.active:hover {
-            background: linear-gradient(135deg, #218838, #1c7a33);
-        }
-
         .validation-section {
-            margin: 20px 0;
+            margin: 25px 0;
             padding: 25px;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background-color: #fafafa;
             transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
+            width: 100%;
+            box-sizing: border-box;
             overflow: hidden;
         }
 
         .validation-section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         }
 
-        .validation-section p {
-            margin: 10px 0;
-            font-size: clamp(0.9rem, 2.2vw, 1rem);
-            color: #333;
-        }
-
-        .validation-section .approved label {
+        .approved label {
             color: #28a745;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .validation-section .rejected label {
+        .rejected label {
             color: #dc3545;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .validation-section input[type="radio"] {
-            margin-right: 8px;
-        }
-
-        .validation-section button {
-            margin-top: 15px;
-        }
-
-        .archive-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f8fafc;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            display: none;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .archive-section.active {
-            display: block;
-            animation: archiveFadeIn 0.6s ease-in-out;
-        }
-
-        @keyframes archiveFadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .archive-section h2 {
-            color: #333;
-            font-size: clamp(1.1rem, 2.8vw, 1.6rem);
-            margin-bottom: 20px;
-            border-bottom: 3px solid #28a745;
-            padding-bottom: 10px;
-            position: relative;
-        }
-
-        .archive-section h2::after {
-            content: '';
-            position: absolute;
-            bottom: -3px;
-            left: 0;
-            width: 100px;
-            height: 3px;
-            background: linear-gradient(90deg, #28a745, #218838);
-            transition: width 0.3s ease;
-        }
-
-        .archive-section h2:hover::after {
-            width: 150px;
-        }
-
-        .archive-section .validation-section {
-            background: #ffffff;
-            border: 1px solid #e8ecef;
-            margin-bottom: 15px;
-            padding: 20px;
-            border-left: 4px solid #6c757d;
-        }
-
-        .archive-section .validation-section.approved {
-            border-left-color: #28a745;
-        }
-
-        .archive-section .validation-section.rejected {
-            border-left-color: #dc3545;
-        }
-
-        .archive-section .validation-section p {
-            margin: 8px 0;
         }
 
         .login-form {
@@ -545,6 +485,15 @@
             display: none;
         }
 
+        .archive-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .archive-section.active {
+            display: block;
+        }
+
         @media (max-width: 1024px) {
             .content {
                 margin-left: 0;
@@ -575,12 +524,11 @@
                 margin: 15px auto;
             }
 
-            .validation-section {
-                padding: 20px;
-            }
-
-            .archive-section {
-                padding: 15px;
+            .notification-bubble {
+                width: 20px;
+                height: 20px;
+                font-size: 0.8em;
+                right: 10px;
             }
         }
 
@@ -653,17 +601,11 @@
                 margin: 10px auto;
             }
 
-            .validation-section {
-                padding: 15px;
-                margin: 15px 0;
-            }
-
-            .archive-section {
-                padding: 10px;
-            }
-
-            .archive-section .validation-section {
-                padding: 15px;
+            .notification-bubble {
+                width: 18px;
+                height: 18px;
+                font-size: 0.75em;
+                right: 8px;
             }
         }
 
@@ -730,17 +672,11 @@
                 margin: 8px auto;
             }
 
-            .validation-section {
-                padding: 12px;
-                margin: 10px 0;
-            }
-
-            .archive-section {
-                padding: 8px;
-            }
-
-            .archive-section .validation-section {
-                padding: 12px;
+            .notification-bubble {
+                width: 16px;
+                height: 16px;
+                font-size: 0.7em;
+                right: 6px;
             }
         }
 
@@ -796,17 +732,11 @@
                 margin: 6px auto;
             }
 
-            .validation-section {
-                padding: 10px;
-                margin: 8px 0;
-            }
-
-            .archive-section {
-                padding: 6px;
-            }
-
-            .archive-section .validation-section {
-                padding: 10px;
+            .notification-bubble {
+                width: 14px;
+                height: 14px;
+                font-size: 0.65em;
+                right: 5px;
             }
         }
     </style>
@@ -815,9 +745,9 @@
     <div class="sidebar-container">
         <div class="sidebar" id="sidebar">
             <h2 onclick="showSection('visitor')" role="button" aria-label="Section Visiteur">Visiteur</h2>
-            <h2 onclick="showLogin('rh')" role="button" aria-label="Section RH">RH</h2>
-            <h2 onclick="showLogin('direction')" role="button" aria-label="Section Direction">Direction</h2>
-            <h2 onclick="showLogin('security')" role="button" aria-label="Section Sécurité">Sécurité</h2>
+            <h2 onclick="showLogin('rh')" role="button" aria-label="Section RH">RH<span id="rhNotification" class="notification-bubble hidden">0</span></h2>
+            <h2 onclick="showLogin('direction')" role="button" aria-label="Section Direction">Direction<span id="directionNotification" class="notification-bubble hidden">0</span></h2>
+            <h2 onclick="showLogin('security')" role="button" aria-label="Section Sécurité">Sécurité<span id="securityNotification" class="notification-bubble hidden">0</span></h2>
         </div>
         <button class="hamburger" id="hamburger" aria-label="Toggle Menu">☰</button>
     </div>
@@ -827,35 +757,35 @@
             <img src="https://www.electrive.net/media/2017/04/wkw-automotive-logo-symbolbild-400x200.png" alt="WKW Automotive Logo" class="logo">
             <form id="visitorForm">
                 <h3>Informations sur le demandeur (employé interne)</h3>
-                <label>Nom et prenom :</label>
+                <label>Nom et prénom :</label>
                 <input type="text" name="demandeur_nom" required>
                 <label>Poste :</label>
                 <input type="text" name="demandeur_poste" required>
-                <label>Departement / Service :</label>
+                <label>Département / Service :</label>
                 <input type="text" name="demandeur_departement" required>
-                <label>Telephone :</label>
+                <label>Téléphone :</label>
                 <input type="text" name="demandeur_telephone" required>
 
                 <h3>Informations sur le visiteur</h3>
-                <label>Nom et prenom :</label>
+                <label>Nom et prénom :</label>
                 <input type="text" name="visiteur_nom" required>
                 <label>Entreprise / Organisation :</label>
                 <input type="text" name="visiteur_entreprise" required>
                 <label>Fonction :</label>
-                <input type="text" name="visiteur_fonction" required>
+                <input type="text" name="visiteur_fonction" etched>
                 <label>Nombre de visiteurs :</label>
                 <input type="number" name="visiteur_nombre" min="1" required>
                 <label>Motif de la visite :</label>
                 <textarea name="visiteur_motif" required></textarea>
                 <label>Date de la visite :</label>
                 <input type="date" name="visiteur_date" id="visiteur_date" required>
-                <label>Heure d’arrivee prevue :</label>
+                <label>Heure d’arrivée prévue :</label>
                 <input type="time" name="visiteur_heure" required>
-                <label>Duree estimee :</label>
+                <label>Durée estimée :</label>
                 <input type="text" name="visiteur_duree" required>
 
-                <h3>Responsable interne accompagnateur (si different du demandeur)</h3>
-                <label>Nom et prenom :</label>
+                <h3>Responsable interne accompagnateur (si différent du demandeur)</h3>
+                <label>Nom et prénom :</label>
                 <input type="text" name="accompagnateur_nom">
                 <label>Poste / Service :</label>
                 <input type="text" name="accompagnateur_poste">
@@ -875,12 +805,10 @@
         </div>
         <div id="rh" class="rh-section">
             <h1>Validation RH</h1>
-            <div class="button-group">
-                <button onclick="updateRHList()">Rafraîchir</button>
-                <button id="rhArchiveToggle" class="archive-toggle" onclick="toggleRHArchive()">Archiver</button>
-                <button onclick="exportRHToExcel()">Exporter Excel</button>
-            </div>
             <div id="rhFormList"></div>
+            <button onclick="updateRHArchive()">Rafraîchir</button>
+            <button id="rhArchiveToggle" onclick="toggleRHArchive()">Afficher</button>
+            <button onclick="exportRHToExcel()">Exporter Excel</button>
             <div class="archive-section" id="rhArchiveSection">
                 <h2>Archive RH</h2>
                 <div id="rhArchiveList"></div>
@@ -888,12 +816,10 @@
         </div>
         <div id="direction" class="direction-section">
             <h1>Validation Direction</h1>
-            <div class="button-group">
-                <button onclick="updateDirectionList()">Rafraîchir</button>
-                <button id="directionArchiveToggle" class="archive-toggle" onclick="toggleDirectionArchive()">Archiver</button>
-                <button onclick="exportDirectionToExcel()">Exporter Excel</button>
-            </div>
             <div id="directionFormList"></div>
+            <button onclick="updateDirectionArchive()">Rafraîchir</button>
+            <button id="directionArchiveToggle" onclick="toggleDirectionArchive()">Afficher</button>
+            <button onclick="exportDirectionToExcel()">Exporter Excel</button>
             <div class="archive-section" id="directionArchiveSection">
                 <h2>Archive Direction</h2>
                 <div id="directionArchiveList"></div>
@@ -937,17 +863,59 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script>
+        // Restrict past dates for visitor form
         function restrictPastDates() {
             const dateInput = document.getElementById('visiteur_date');
             const today = new Date().toISOString().split('T')[0];
             dateInput.setAttribute('min', today);
         }
 
+        // Escape CSV fields to handle special characters
         function escapeCSVField(field) {
             if (!field) return '';
             return `"${field.replace(/"/g, '""').replace(/\n/g, ' ')}"`;
         }
 
+        // Update notification bubbles for RH, Direction, and Security
+        function updateNotificationBubbles() {
+            // RH: Count pending_rh forms
+            db.collection('visitors').where('status', '==', 'pending_rh').get()
+                .then((querySnapshot) => {
+                    const rhBubble = document.getElementById('rhNotification');
+                    const count = querySnapshot.size;
+                    rhBubble.textContent = count;
+                    rhBubble.classList.toggle('hidden', count === 0);
+                })
+                .catch((error) => {
+                    console.error('Error updating RH notification:', error);
+                });
+
+            // Direction: Count pending_direction forms
+            db.collection('visitors').where('status', '==', 'pending_direction').get()
+                .then((querySnapshot) => {
+                    const dirBubble = document.getElementById('directionNotification');
+                    const count = querySnapshot.size;
+                    dirBubble.textContent = count;
+                    dirBubble.classList.toggle('hidden', count === 0);
+                })
+                .catch((error) => {
+                    console.error('Error updating Direction notification:', error);
+                });
+
+            // Security: Count approved or rejected forms
+            db.collection('visitors').where('status', 'in', ['approved', 'rejected']).get()
+                .then((querySnapshot) => {
+                    const secBubble = document.getElementById('securityNotification');
+                    const count = querySnapshot.size;
+                    secBubble.textContent = count;
+                    secBubble.classList.toggle('hidden', count === 0);
+                })
+                .catch((error) => {
+                    console.error('Error updating Security notification:', error);
+                });
+        }
+
+        // Submit visitor form
         function submitForm(event) {
             event.preventDefault();
             const formData = new FormData(document.getElementById('visitorForm'));
@@ -970,6 +938,7 @@
                     document.getElementById('visitorForm').reset();
                     alert('Formulaire envoyé à RH pour validation.');
                     updateRHList();
+                    updateNotificationBubbles();
                     showSection('rh');
                 })
                 .catch((error) => {
@@ -978,6 +947,7 @@
                 });
         }
 
+        // Show security data table
         function showSecurityDataTable() {
             const dataTableSection = document.getElementById('securityDataTable');
             const dataToggle = document.getElementById('securityDataToggle');
@@ -1018,6 +988,7 @@
             }
         }
 
+        // Show specific section
         function showSection(section) {
             console.log('showSection called with:', section, 'loggedInRole:', window.loggedInRole);
             if (section !== 'visitor' && !window.loggedInRole) {
@@ -1036,6 +1007,7 @@
             console.log('Showing section:', section, 'Current role:', window.loggedInRole);
         }
 
+        // Show login form for specific role
         function showLogin(role) {
             console.log('showLogin called with:', role);
             window.currentSection = role;
@@ -1052,6 +1024,7 @@
             }
         }
 
+        // Handle login
         function handleLogin(event) {
             event.preventDefault();
             console.log('handleLogin triggered');
@@ -1088,6 +1061,7 @@
                             document.getElementById('loginForm').reset();
                             showSection(window.currentSection || window.loggedInRole);
                             setupRealTimeListeners();
+                            updateNotificationBubbles();
                         });
                 })
                 .catch((error) => {
@@ -1096,6 +1070,7 @@
                 });
         }
 
+        // Validate RH form
         function validateRH(id) {
             if (window.loggedInRole !== 'rh') {
                 alert('Accès non autorisé pour valider.');
@@ -1127,6 +1102,7 @@
                 .then(() => {
                     console.log('RH validation updated in Firestore for ID:', id, 'New status:', updateData.status);
                     updateRHList();
+                    updateNotificationBubbles();
                     if (rhDecision === 'approved') {
                         updateDirectionList();
                         setTimeout(() => {
@@ -1146,6 +1122,7 @@
                 });
         }
 
+        // Validate Direction form
         function validateDirection(id) {
             if (window.loggedInRole !== 'direction') {
                 alert('Accès non autorisé pour valider.');
@@ -1173,6 +1150,7 @@
                     return db.collection('visitors').doc(id.toString()).get().then(doc => {
                         console.log('Verified document after update:', doc.data());
                         updateDirectionList();
+                        updateNotificationBubbles();
                         setTimeout(() => {
                             alert(`Demande ${dirDecision === 'approved' ? 'validée' : 'refusée'} par Direction.`);
                             showSection('security');
@@ -1185,6 +1163,7 @@
                 });
         }
 
+        // Update RH list
         function updateRHList() {
             console.log('Updating RH list...');
             db.collection('visitors').where('status', '==', 'pending_rh').get()
@@ -1203,6 +1182,7 @@
                             <p><strong>Date :</strong> ${form.visiteur_date}</p>
                             <div class="approved"><label><input type="radio" name="rh_${form.id}" value="approved" required> Accordé</label></div>
                             <div class="rejected"><label><input type="radio" name="rh_${form.id}" value="rejected"> Refusé</label></div>
+                            <br>
                             <label>Nom :</label><input type="text" id="rh_name_${form.id}" required>
                             <label>Signature :</label><input type="text" id="rh_signature_${form.id}" required>
                             <button data-id="${form.id}" onclick="validateRH(${form.id})">Valider</button>
@@ -1215,28 +1195,33 @@
                 });
         }
 
+        // Update RH archive
         function updateRHArchive() {
             console.log('Updating RH archive...');
-            db.collection('visitors').where('status', 'in', ['approved', 'rejected', 'archived']).get()
+            db.collection('visitors').get()
                 .then((querySnapshot) => {
                     const rhArchiveList = document.getElementById('rhArchiveList');
-                    rhArchiveList.innerHTML = '';
+                    rhArchiveList.innerHTML = ''; // Clear previous content
                     querySnapshot.forEach((doc) => {
                         const form = doc.data();
-                        const div = document.createElement('div');
-                        div.classList.add('validation-section', form.status);
-                        div.innerHTML = `
-                            <p><strong>Demandeur :</strong> ${form.demandeur_nom || 'N/A'}</p>
-                            <p><strong>Visiteur :</strong> ${form.visiteur_nom || 'N/A'}</p>
-                            <p><strong>Motif :</strong> ${form.visiteur_motif || 'N/A'}</p>
-                            <p><strong>Date :</strong> ${form.visiteur_date || 'N/A'}</p>
-                            ${form.rh_name ? `<p><strong>Décision RH :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : '<p><strong>Décision RH :</strong> En attente</p>'}
-                            ${form.rh_name ? `<p><strong>Nom :</strong> ${form.rh_name}</p>` : ''}
-                            ${form.rh_signature ? `<p><strong>Signature :</strong> ${form.rh_signature}</p>` : ''}
-                            ${form.final_status ? `<p><strong>Statut Final :</strong> ${form.final_status}</p>` : ''}
-                        `;
-                        rhArchiveList.appendChild(div);
+                        // Only show forms that have been processed (not pending_rh)
+                        if (form.status !== 'pending_rh') {
+                            const div = document.createElement('div');
+                            div.classList.add('validation-section');
+                            div.innerHTML = `
+                                <p><strong>Demandeur :</strong> ${form.demandeur_nom || 'N/A'}</p>
+                                <p><strong>Visiteur :</strong> ${form.visiteur_nom || 'N/A'}</p>
+                                <p><strong>Motif :</strong> ${form.visiteur_motif || 'N/A'}</p>
+                                <p><strong>Date :</strong> ${form.visiteur_date || 'N/A'}</p>
+                                ${form.rh_name ? `<p><strong>Décision RH :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : '<p><strong>Décision RH :</strong> En attente</p>'}
+                                ${form.rh_name ? `<p><strong>Nom :</strong> ${form.rh_name}</p>` : ''}
+                                ${form.rh_signature ? `<p><strong>Signature :</strong> ${form.rh_signature}</p>` : ''}
+                                ${form.final_status ? `<p><strong>Statut Final :</strong> ${form.final_status}</p>` : ''}
+                            `;
+                            rhArchiveList.appendChild(div);
+                        }
                     });
+                    console.log('RH archive updated, forms count:', querySnapshot.size);
                 })
                 .catch((error) => {
                     console.error('Error fetching RH archive:', error);
@@ -1244,19 +1229,19 @@
                 });
         }
 
+        // Toggle RH archive
         function toggleRHArchive() {
             const archiveSection = document.getElementById('rhArchiveSection');
             const archiveToggle = document.getElementById('rhArchiveToggle');
-            archiveSection.classList.toggle('active');
-            archiveToggle.classList.toggle('active');
-            if (archiveSection.classList.contains('active')) {
-                archiveToggle.textContent = 'Masquer';
-                updateRHArchive();
-            } else {
-                archiveToggle.textContent = 'Archiver';
+            const isActive = archiveSection.classList.toggle('active');
+            archiveToggle.textContent = isActive ? 'Masquer' : 'Afficher';
+            if (isActive) {
+                updateRHArchive(); // Fetch archive data only when showing
             }
+            console.log('RH archive toggled:', isActive ? 'Shown' : 'Hidden');
         }
 
+        // Update Direction list
         function updateDirectionList() {
             console.log('Updating Direction list...');
             db.collection('visitors').where('status', '==', 'pending_direction').get()
@@ -1276,6 +1261,7 @@
                             <p><strong>RH Validation :</strong> ${form.rh_name}</p>
                             <div class="approved"><label><input type="radio" name="dir_${form.id}" value="approved" required> Accordé</label></div>
                             <div class="rejected"><label><input type="radio" name="dir_${form.id}" value="rejected"> Refusé</label></div>
+                            <br>
                             <label>Nom :</label><input type="text" id="dir_name_${form.id}" required>
                             <label>Signature :</label><input type="text" id="dir_signature_${form.id}" required>
                             <button data-id="${form.id}" onclick="validateDirection(${form.id})">Valider</button>
@@ -1288,28 +1274,32 @@
                 });
         }
 
+        // Update Direction archive
         function updateDirectionArchive() {
             console.log('Updating Direction archive...');
-            db.collection('visitors').where('status', 'in', ['approved', 'rejected', 'archived']).get()
+            db.collection('visitors').get()
                 .then((querySnapshot) => {
                     const directionArchiveList = document.getElementById('directionArchiveList');
-                    directionArchiveList.innerHTML = '';
+                    directionArchiveList.innerHTML = ''; // Clear previous content
                     querySnapshot.forEach((doc) => {
                         const form = doc.data();
-                        const div = document.createElement('div');
-                        div.classList.add('validation-section', form.status);
-                        div.innerHTML = `
-                            <p><strong>Demandeur :</strong> ${form.demandeur_nom || 'N/A'}</p>
-                            <p><strong>Visiteur :</strong> ${form.visiteur_nom || 'N/A'}</p>
-                            <p><strong>Motif :</strong> ${form.visiteur_motif || 'N/A'}</p>
-                            <p><strong>Date :</strong> ${form.visiteur_date || 'N/A'}</p>
-                            ${form.rh_name ? `<p><strong>RH Validation :</strong> ${form.rh_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.rh_name}</p>` : ''}
-                            ${form.dir_name ? `<p><strong>Décision Direction :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.dir_name}</p>` : '<p><strong>Décision Direction :</strong> En attente</p>'}
-                            ${form.dir_name ? `<p><strong>Nom :</strong> ${form.dir_name}</p>` : ''}
-                            ${form.dir_signature ? `<p><strong>Signature :</strong> ${form.dir_signature}</p>` : ''}
-                        `;
-                        directionArchiveList.appendChild(div);
+                        // Only show forms that have been processed by Direction (not pending_rh or pending_direction)
+                        if (form.status !== 'pending_rh' && form.status !== 'pending_direction') {
+                            const div = document.createElement('div');
+                            div.classList.add('validation-section');
+                            div.innerHTML = `
+                                <p><strong>Demandeur :</strong> ${form.demandeur_nom || 'N/A'}</p>
+                                <p><strong>Visiteur :</strong> ${form.visiteur_nom || 'N/A'}</p>
+                                <p><strong>Motif :</strong> ${form.visiteur_motif || 'N/A'}</p>
+                                <p><strong>Date :</strong> ${form.visiteur_date || 'N/A'}</p>
+                                ${form.dir_name ? `<p><strong>Décision Direction :</strong> ${form.dir_decision === 'approved' ? 'Accordé' : 'Refusé'} par ${form.dir_name}</p>` : '<p><strong>Décision Direction :</strong> En attente</p>'}
+                                ${form.dir_name ? `<p><strong>Nom :</strong> ${form.dir_name}</p>` : ''}
+                                ${form.dir_signature ? `<p><strong>Signature :</strong> ${form.dir_signature}</p>` : ''}
+                            `;
+                            directionArchiveList.appendChild(div);
+                        }
                     });
+                    console.log('Direction archive updated, forms count:', querySnapshot.size);
                 })
                 .catch((error) => {
                     console.error('Error fetching Direction archive:', error);
@@ -1317,19 +1307,19 @@
                 });
         }
 
+        // Toggle Direction archive
         function toggleDirectionArchive() {
             const archiveSection = document.getElementById('directionArchiveSection');
             const archiveToggle = document.getElementById('directionArchiveToggle');
-            archiveSection.classList.toggle('active');
-            archiveToggle.classList.toggle('active');
-            if (archiveSection.classList.contains('active')) {
-                archiveToggle.textContent = 'Masquer';
-                updateDirectionArchive();
-            } else {
-                archiveToggle.textContent = 'Archiver';
+            const isActive = archiveSection.classList.toggle('active');
+            archiveToggle.textContent = isActive ? 'Masquer' : 'Afficher';
+            if (isActive) {
+                updateDirectionArchive(); // Fetch archive data only when showing
             }
+            console.log('Direction archive toggled:', isActive ? 'Shown' : 'Hidden');
         }
 
+        // Export RH data to Excel
         function exportRHToExcel() {
             console.log('Exporting RH data to Excel...');
             db.collection('visitors').get()
@@ -1369,6 +1359,7 @@
                 });
         }
 
+        // Export Direction data to Excel
         function exportDirectionToExcel() {
             console.log('Exporting Direction data to Excel...');
             db.collection('visitors').get()
@@ -1408,6 +1399,7 @@
                 });
         }
 
+        // Export Security data to Excel
         function exportSecurityToExcel() {
             console.log('Exporting Security data to Excel...');
             db.collection('visitors').get()
@@ -1456,6 +1448,7 @@
                 });
         }
 
+        // Setup real-time listeners for RH and Direction
         function setupRealTimeListeners() {
             console.log('Setting up real-time listeners for role:', window.loggedInRole);
             if (window.unsubscribers) {
@@ -1463,6 +1456,49 @@
             }
             window.unsubscribers = [];
 
+            // Real-time listener for RH notifications
+            const unsubscribeRHNotification = db.collection('visitors')
+                .where('status', '==', 'pending_rh')
+                .onSnapshot((snapshot) => {
+                    const rhBubble = document.getElementById('rhNotification');
+                    const count = snapshot.size;
+                    rhBubble.textContent = count;
+                    rhBubble.classList.toggle('hidden', count === 0);
+                    console.log('RH notification updated:', count);
+                }, (error) => {
+                    console.error('Error in RH notification listener:', error);
+                });
+            window.unsubscribers.push(unsubscribeRHNotification);
+
+            // Real-time listener for Direction notifications
+            const unsubscribeDirNotification = db.collection('visitors')
+                .where('status', '==', 'pending_direction')
+                .onSnapshot((snapshot) => {
+                    const dirBubble = document.getElementById('directionNotification');
+                    const count = snapshot.size;
+                    dirBubble.textContent = count;
+                    dirBubble.classList.toggle('hidden', count === 0);
+                    console.log('Direction notification updated:', count);
+                }, (error) => {
+                    console.error('Error in Direction notification listener:', error);
+                });
+            window.unsubscribers.push(unsubscribeDirNotification);
+
+            // Real-time listener for Security notifications
+            const unsubscribeSecNotification = db.collection('visitors')
+                .where('status', 'in', ['approved', 'rejected'])
+                .onSnapshot((snapshot) => {
+                    const secBubble = document.getElementById('securityNotification');
+                    const count = snapshot.size;
+                    secBubble.textContent = count;
+                    secBubble.classList.toggle('hidden', count === 0);
+                    console.log('Security notification updated:', count);
+                }, (error) => {
+                    console.error('Error in Security notification listener:', error);
+                });
+            window.unsubscribers.push(unsubscribeSecNotification);
+
+            // Existing listeners for RH and Direction lists
             if (window.loggedInRole === 'rh') {
                 const unsubscribeRH = db.collection('visitors')
                     .where('status', '==', 'pending_rh')
@@ -1481,6 +1517,7 @@
                                 <p><strong>Date :</strong> ${form.visiteur_date}</p>
                                 <div class="approved"><label><input type="radio" name="rh_${form.id}" value="approved" required> Accordé</label></div>
                                 <div class="rejected"><label><input type="radio" name="rh_${form.id}" value="rejected"> Refusé</label></div>
+                                <br>
                                 <label>Nom :</label><input type="text" id="rh_name_${form.id}" required>
                                 <label>Signature :</label><input type="text" id="rh_signature_${form.id}" required>
                                 <button data-id="${form.id}" onclick="validateRH(${form.id})">Valider</button>
@@ -1510,6 +1547,7 @@
                                 <p><strong>RH Validation :</strong> ${form.rh_name}</p>
                                 <div class="approved"><label><input type="radio" name="dir_${form.id}" value="approved" required> Accordé</label></div>
                                 <div class="rejected"><label><input type="radio" name="dir_${form.id}" value="rejected"> Refusé</label></div>
+                                <br>
                                 <label>Nom :</label><input type="text" id="dir_name_${form.id}" required>
                                 <label>Signature :</label><input type="text" id="dir_signature_${form.id}" required>
                                 <button data-id="${form.id}" onclick="validateDirection(${form.id})">Valider</button>
@@ -1523,6 +1561,7 @@
             }
         }
 
+        // Initialize Firebase and setup event listeners
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM fully loaded, initializing Firebase...');
             const firebaseConfig = {
@@ -1579,6 +1618,9 @@
             document.getElementById('visitorForm').addEventListener('submit', submitForm);
 
             restrictPastDates();
+
+            // Initialize notification bubbles
+            updateNotificationBubbles();
 
             showSection('visitor');
 
