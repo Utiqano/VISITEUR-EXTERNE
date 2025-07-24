@@ -1,13 +1,60 @@
+:root {
+    --primary-green: #28a745;
+    --danger-red: #dc3545;
+    --primary-blue: #2185ff;
+    --border-radius: 12px;
+    --shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
 body {
     margin: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
-    background-image: url('https://ith-gmbh.de/wp-content/uploads/logo-wkwk.png');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background-color: #f0f0f0;
     color: #333;
     overflow-x: hidden;
     line-height: 1.6;
+}
+
+.text-logo {
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: logoFadeIn 1s ease-in-out;
+}
+
+.text-logo .wkw {
+    color: #ff0000;
+}
+
+.text-logo .automotive {
+    color: #808080;
+}
+
+.text-logo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.text-logo:hover .wkw {
+    color: #cc0000;
+}
+
+.text-logo:hover .automotive {
+    color: #666666;
+}
+
+@keyframes logoFadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.form-container:not(.active) .text-logo {
+    display: none;
 }
 
 .sidebar-container {
@@ -44,7 +91,7 @@ body {
 }
 
 .sidebar h2:hover {
-    background-color: #2185ff;
+    background-color: var(--primary-blue);
     color: #fff;
     transform: scale(1.06);
 }
@@ -56,7 +103,7 @@ body {
     left: 20%;
     width: 60%;
     height: 2px;
-    background: #28a745;
+    background: var(--primary-green);
     transform: scaleX(0);
     transition: transform 0.3s ease-in-out;
 }
@@ -70,7 +117,7 @@ body {
     right: 15px;
     top: 50%;
     transform: translateY(-50%);
-    background-color: #dc3545;
+    background-color: var(--danger-red);
     color: white;
     font-size: 0.9em;
     font-weight: 600;
@@ -100,8 +147,8 @@ body {
     min-height: 100vh;
     animation: fadeIn 0.6s ease-in-out;
     transition: margin-left 0.3s ease-in-out;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
 }
 
 @keyframes fadeIn {
@@ -114,7 +161,7 @@ body {
     position: fixed;
     top: 15px;
     left: 15px;
-    background: linear-gradient(135deg, #2185ff, #2185ff);
+    background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue));
     color: white;
     border: none;
     padding: 12px 18px;
@@ -150,8 +197,8 @@ form {
     margin: 0 auto;
     background-color: #fff;
     padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
     border: 1px solid #e0e0e0;
 }
 
@@ -175,7 +222,7 @@ input, textarea, select {
 }
 
 input:focus, textarea:focus {
-    border-color: #28a745;
+    border-color: var(--primary-green);
     box-shadow: 0 0 8px rgba(40, 167, 69, 0.6);
     background-color: #f9fff9;
     outline: none;
@@ -201,7 +248,7 @@ textarea {
 
 button {
     padding: 14px 28px;
-    background: linear-gradient(135deg, #2185ff, #3b93ff);
+    background: linear-gradient(135deg, var(--primary-blue), #3b93ff);
     color: white;
     border: none;
     border-radius: 8px;
@@ -222,7 +269,7 @@ button:hover {
     margin: 25px 0;
     padding: 25px;
     border: 2px solid #e0e0e0;
-    border-radius: 12px;
+    border-radius: var(--border-radius);
     background-color: #fafafa;
     transition: transform 0.3s, box-shadow 0.3s;
     width: 100%;
@@ -236,12 +283,12 @@ button:hover {
 }
 
 .approved label {
-    color: #28a745;
+    color: var(--primary-green);
     font-weight: 600;
 }
 
 .rejected label {
-    color: #dc3545;
+    color: var(--danger-red);
     font-weight: 600;
 }
 
@@ -250,14 +297,14 @@ button:hover {
     margin: 60px auto;
     padding: 30px;
     background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
     animation: fadeIn 0.6s ease-in-out;
     border: 1px solid #e0e0e0;
 }
 
 .error {
-    color: #dc3545;
+    color: var(--danger-red);
     text-align: center;
     margin-bottom: 20px;
     font-weight: 600;
@@ -276,7 +323,7 @@ button:hover {
 
 h1, h3 {
     color: #444;
-    border-bottom: 4px solid #28a745;
+    border-bottom: 4px solid var(--primary-green);
     padding-bottom: 15px;
     font-weight: 700;
     font-size: clamp(1.2rem, 3vw, 1.8rem);
@@ -291,7 +338,7 @@ h1::after, h3::after {
     left: 0;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, #28a745, #218838);
+    background: linear-gradient(90deg, var(--primary-green), #218838);
     transform: scaleX(0);
     transition: transform 0.4s ease-in-out;
 }
@@ -306,20 +353,6 @@ h1:hover::after, h3:hover::after {
     gap: 20px;
     font-size: clamp(1.2rem, 3vw, 1.8rem);
     margin-bottom: 25px;
-}
-
-.security-section h1 img {
-    width: clamp(50px, 10vw, 60px);
-    height: clamp(50px, 10vw, 60px);
-    animation: rotateIn 1s ease-in-out;
-    border-radius: 50%;
-    border: 3px solid #28a745;
-    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-}
-
-@keyframes rotateIn {
-    from { transform: rotate(-10deg) scale(0.9); opacity: 0; }
-    to { transform: rotate(0) scale(1); opacity: 1; }
 }
 
 .security-section button {
@@ -338,8 +371,8 @@ h1:hover::after, h3:hover::after {
     margin-top: 30px;
     padding: 20px;
     background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
     transition: opacity 0.5s ease, transform 0.5s ease;
     display: none;
     overflow-x: auto;
@@ -359,7 +392,7 @@ h1:hover::after, h3:hover::after {
     color: #333;
     font-size: clamp(1.1rem, 2.8vw, 1.6rem);
     margin-bottom: 20px;
-    border-bottom: 3px solid #28a745;
+    border-bottom: 3px solid var(--primary-green);
     padding-bottom: 10px;
     position: relative;
 }
@@ -371,7 +404,7 @@ h1:hover::after, h3:hover::after {
     left: 0;
     width: 100px;
     height: 3px;
-    background: linear-gradient(90deg, #28a745, #218838);
+    background: linear-gradient(90deg, var(--primary-green), #218838);
     transition: width 0.3s ease;
 }
 
@@ -396,11 +429,11 @@ h1:hover::after, h3:hover::after {
     font-size: clamp(0.9rem, 2.2vw, 1rem);
     border-bottom: 1px solid #e8ecef;
     transition: background-color 0.3s ease;
-    min-width: 100px; /* Ensure consistent column width */
+    min-width: 100px;
 }
 
 .data-table-section th {
-    background: linear-gradient(135deg, #28a745, #218838);
+    background: linear-gradient(135deg, var(--primary-green), #218838);
     color: #ffffff;
     font-weight: 700;
     text-transform: uppercase;
@@ -422,13 +455,13 @@ h1:hover::after, h3:hover::after {
 }
 
 .data-table-section td.approved {
-    color: #28a745;
+    color: var(--primary-green);
     font-weight: 600;
     background: rgba(40, 167, 69, 0.1);
 }
 
 .data-table-section td.rejected {
-    color: #dc3545;
+    color: var(--danger-red);
     font-weight: 600;
     background: rgba(220, 53, 69, 0.1);
 }
@@ -457,25 +490,6 @@ h1:hover::after, h3:hover::after {
     background: rgba(108, 117, 125, 0.1);
 }
 
-.form-container .logo {
-    display: block;
-    margin: 20px auto;
-    width: clamp(150px, 25vw, 200px);
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    animation: logoFadeIn 1s ease-in-out;
-}
-
-@keyframes logoFadeIn {
-    from { opacity: 0; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-.form-container:not(.active) .logo {
-    display: none;
-}
-
 .archive-section {
     display: none;
     margin-top: 20px;
@@ -495,9 +509,9 @@ h1:hover::after, h3:hover::after {
         width: 220px;
     }
 
-    .security-section h1 img {
-        width: clamp(40px, 8vw, 50px);
-        height: clamp(40px, 8vw, 50px);
+    .text-logo {
+        font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+        margin: 15px auto;
     }
 
     .data-table-section {
@@ -509,11 +523,6 @@ h1:hover::after, h3:hover::after {
         padding: 12px 15px;
         font-size: clamp(0.85rem, 2vw, 0.9rem);
         min-width: 80px;
-    }
-
-    .form-container .logo {
-        width: clamp(120px, 20vw, 160px);
-        margin: 15px auto;
     }
 
     .notification-bubble {
@@ -553,6 +562,11 @@ h1:hover::after, h3:hover::after {
         max-width: 100%;
     }
 
+    .text-logo {
+        font-size: clamp(1.2rem, 3vw, 1.6rem);
+        margin: 10px auto;
+    }
+
     input, textarea, select, button {
         padding: 10px;
         font-size: clamp(0.85rem, 2.2vw, 1rem);
@@ -569,7 +583,7 @@ h1:hover::after, h3:hover::after {
     }
 
     .data-table-section table {
-        min-width: 700px; /* Adjusted for new column */
+        min-width: 500px;
     }
 
     .data-table-section th,
@@ -579,19 +593,9 @@ h1:hover::after, h3:hover::after {
         min-width: 70px;
     }
 
-    .security-section h1 img {
-        width: clamp(30px, 6vw, 40px);
-        height: clamp(30px, 6vw, 40px);
-    }
-
     h1, h3 {
         font-size: clamp(1rem, 2.5vw, 1.4rem);
         margin-bottom: 15px;
-    }
-
-    .form-container .logo {
-        width: clamp(100px, 18vw, 140px);
-        margin: 10px auto;
     }
 
     .notification-bubble {
@@ -618,6 +622,11 @@ h1:hover::after, h3:hover::after {
 
     form {
         padding: 10px;
+    }
+
+    .text-logo {
+        font-size: clamp(1rem, 2.5vw, 1.4rem);
+        margin: 8px auto;
     }
 
     label {
@@ -651,19 +660,9 @@ h1:hover::after, h3:hover::after {
         min-width: 60px;
     }
 
-    .security-section h1 img {
-        width: clamp(25px, 5vw, 30px);
-        height: clamp(25px, 5vw, 30px);
-    }
-
     .login-form {
         margin: 20px auto;
         padding: 15px;
-    }
-
-    .form-container .logo {
-        width: clamp(80px, 15vw, 120px);
-        margin: 8px auto;
     }
 
     .notification-bubble {
@@ -692,6 +691,11 @@ h1:hover::after, h3:hover::after {
         padding: 8px;
     }
 
+    .text-logo {
+        font-size: clamp(0.9rem, 2vw, 1.2rem);
+        margin: 6px auto;
+    }
+
     label {
         margin: 10px 0 5px;
     }
@@ -715,16 +719,6 @@ h1:hover::after, h3:hover::after {
         padding: 6px 8px;
         font-size: clamp(0.6rem, 1.6vw, 0.7rem);
         min-width: 50px;
-    }
-
-    .security-section h1 img {
-        width: clamp(20px, 4vw, 25px);
-        height: clamp(20px, 4vw, 25px);
-    }
-
-    .form-container .logo {
-        width: clamp(60px, 12vw, 100px);
-        margin: 6px auto;
     }
 
     .notification-bubble {
